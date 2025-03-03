@@ -3,16 +3,17 @@ import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from core.models import Base, db_helper
+# from core.models import Base, db_helper
 from core.config import settings
 
 from api_v1 import router as api_v1_routers
 
 
+# Блок для создания таблиц без alembic
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    #     async with db_helper.engine.begin() as conn:
+    #         await conn.run_sync(Base.metadata.create_all)
     yield
 
 
