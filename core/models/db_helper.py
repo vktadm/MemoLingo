@@ -28,7 +28,7 @@ class DatabaseHelper:
         # autocommit=False: транзакции не будут автоматически подтверждаться.
         # нужно будет вызывать await session.commit() для подтверждения изменений.
         self.session_factory = async_sessionmaker(
-            bind=self.engine, autoflush=False, autocommit=False, expire_on_commit=False
+            bind=self.engine, autoflush=False, expire_on_commit=False
         )
 
     def get_scoped_session(self):
