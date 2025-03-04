@@ -5,4 +5,5 @@ from .base import Base
 
 class Category(Base):
     title: Mapped[str]
+    translation: Mapped[str]
     description: Mapped[str | None]

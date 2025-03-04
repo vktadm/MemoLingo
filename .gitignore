@@ -5,4 +5,3 @@ __pycache__
 .env
 temp.txt
 db.sqlite3
-testing_conection.py
