@@ -1,8 +1,8 @@
-"""Create api_v1 tables
+"""Create database
 
-Revision ID: 8ecf8750fcb2
+Revision ID: 8bfc7e819fe1
 Revises:
-Create Date: 2025-03-05 16:35:13.283187
+Create Date: 2025-03-05 20:49:01.562885
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "8ecf8750fcb2"
+revision: str = "8bfc7e819fe1"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -28,6 +28,7 @@ def upgrade() -> None:
         sa.Column("description", sa.String(), nullable=True),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("title"),
     )
     op.create_table(
         "user",
@@ -47,6 +48,7 @@ def upgrade() -> None:
         sa.Column("img", sa.String(), nullable=True),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("wrd"),
     )
     op.create_table(
         "category_word_association",
