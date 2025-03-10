@@ -4,8 +4,6 @@ from pydantic import BaseModel, ConfigDict
 class WordBase(BaseModel):
     wrd: str
     translation: str
-    # transcription: str | None
-    # description: str | None
 
 
 class WordCreate(WordBase):
