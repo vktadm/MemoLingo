@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .schemas import Word, WordCreate, WordUpdate, WordUpdatePartial
+from .schemas import Word, WordCreate, WordUpdate
 from . import crud
 from .dependencies import word_by_id
 from core.models import db_helper
 
-router = APIRouter(tags=["Word"])
+router = APIRouter(tags=["Words"])
 
 
 @router.get("/", response_model=list[Word])
@@ -29,7 +29,7 @@ async def get_word(word: Word = Depends(word_by_id)):
 
 @router.patch("/{word_id}/")
 async def update_word(
-    word_update: WordUpdate | WordUpdatePartial,
+    word_update: WordUpdate,
     word: Word = Depends(word_by_id),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):

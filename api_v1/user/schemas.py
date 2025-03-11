@@ -3,15 +3,15 @@ from annotated_types import MinLen, MaxLen
 from pydantic import BaseModel, EmailStr, ConfigDict
 
 
-class CreateUser(BaseModel):
-    username: Annotated[str, MinLen(6), MaxLen(30)]
-    email: EmailStr
-
-
-class UserSchema(BaseModel):
-    model_config = ConfigDict(strict=True)
-
+class BaseUser(BaseModel):
     username: str
-    password: bytes
-    email: EmailStr | str = None
-    active: bool = True
+
+
+class CreateUser(BaseUser):
+    username: Annotated[str, MinLen(3), MaxLen(30)]  # TODO: lower()
+    # email: EmailStr
+
+
+class User(BaseUser):
+    model_config = ConfigDict(strict=True)
+    id: int

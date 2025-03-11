@@ -3,7 +3,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from core.models import Word
 
-from .schemas import WordCreate, WordUpdate, WordUpdatePartial
+from .schemas import WordCreate, WordUpdate
 
 
 async def get_words(session: AsyncSession) -> list[Word]:
@@ -31,11 +31,11 @@ async def update_word(
     word_update: WordUpdate,
     partial: bool = False,
 ) -> Word | None:
-    print(partial)
+
     for key, value in word_update.model_dump(exclude_unset=partial).items():
-        print(key, value)
         setattr(word, key, value)
     await session.commit()
+
     return word
 
 
