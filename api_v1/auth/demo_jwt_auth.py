@@ -1,13 +1,11 @@
 from fastapi import APIRouter, Depends, Form, HTTPException, status
 from pydantic import BaseModel
 from fastapi.security import (
-    HTTPBearer,
-    HTTPAuthorizationCredentials,
     OAuth2PasswordBearer,
 )
 from jwt.exceptions import InvalidTokenError
 
-from api_v1.user.schemas import UserSchema
+from api_basic.user import UserSchema
 from api_v1.auth import utils_jwt
 
 

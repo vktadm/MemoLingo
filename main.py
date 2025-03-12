@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from core.config import settings
 
 from api_v1 import router as api_v1_routers
+from api_basic import router as api_basic_router
 
 
 # Блок для создания таблиц без alembic
@@ -19,11 +20,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(router=api_v1_routers, prefix=settings.api_v1_prefix)
+# app.include_router(router=api_basic_router, prefix=settings.api_basic)
 
 
 @app.get("/")
 def default_page():
-    return {"message": "This is MemoLingo"}
+    return {
+        "message": "This is MemoLingo",
+    }
 
 
 if __name__ == "__main__":

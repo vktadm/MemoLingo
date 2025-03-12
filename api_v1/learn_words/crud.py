@@ -5,9 +5,9 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from .schemas import NewUserWord, UserWord
+from .schemas import NewUserWord
 
-from core.models import Word, UserProgress, Status, User
+from core.models import Word, UserProgress, User
 
 
 async def user_by_id(

@@ -6,7 +6,7 @@ from . import crud
 from .dependencies import category_by_id
 from core.models import db_helper
 
-router = APIRouter(tags=["Category"])
+router = APIRouter(tags=["Categories"])
 
 
 @router.get("/", response_model=list[Category])
