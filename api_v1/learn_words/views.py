@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..word.schemas import Word as WordSchema
-from ..user_progress.schemas import UserWord as UserWordSchema
+# TODO Поправить относительные импорты
+from .schemas import NewUserWord, UserWord
 
 from . import crud
 from core.models import db_helper
@@ -12,25 +12,47 @@ from core.models import db_helper
 router = APIRouter(tags=["Learn Words"])
 
 
-@router.post(
+@router.get(
     "/{user_id}/",
-    response_model=list[UserWordSchema],
-    status_code=status.HTTP_201_CREATED,
+    response_model=list[NewUserWord],
 )
-async def add_words_to_user(
+async def get_user_words(
     user_id: int, session: AsyncSession = Depends(db_helper.session_dependency)
 ):
+    """Endpoint получает новые слова для изучения."""
+
     # TODO: Проверка на существование пользователя -> raise
-    # TODO: Сейчас возможно создавать UserProgres для несуществующего user
-    words = await crud.get_new_user_words(
+    # TODO: Сейчас возможно создавать UserProgres для несуществующего User
+    new_words = await crud.get_new_user_words(
         session=session,
         user_id=user_id,
         quantity_words=5,
     )
-    words = await crud.add_new_user_words(
+
+    if not new_words:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+            detail=f"No words for user_id: {user_id}",
+        )
+
+    return new_words
+
+
+@router.post(
+    "/{user_id}/", response_model=list[UserWord], status_code=status.HTTP_201_CREATED
+)
+async def add_user_words(
+    user_id: int,
+    new_words: list[NewUserWord],
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    """Endpoint создает прогресс по новым словам."""
+
+    user_words = await crud.add_new_user_words(
         session=session,
         user_id=user_id,
-        words_in=words,
+        new_words=new_words,
     )
-    # TODO: Если нет слов ?
-    return words
+
+    # TODO: return list[Word]
+    return user_words
