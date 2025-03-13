@@ -3,7 +3,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from .schemas import NewUserWord
+from .schemas import UserWord
 from core.models import Word, UserProgress, User, Status
 
 
@@ -22,22 +22,24 @@ async def get_user_words(
     session: AsyncSession,
     user_id: int,
     category: str = None,
-) -> list[Word]:
+) -> list[UserWord]:
     """
     Получает все слова, которых с UserProgress.status == NotStudy.
     TODO category - категория, из которой берем слова для повторения.
     """
-
     stmt = select(Word).where(
         Word.id.in_(
             select(UserProgress.word_id).where(
-                UserProgress.user_id == user_id, UserProgress.status == Status.NotStudy
+                UserProgress.user_id == user_id,
+                UserProgress.status == Status.NotStudy,
             )
         )
     )
 
     result: Result = await session.execute(stmt)
-    user_words = result.scalars().all()
+    words = result.scalars().all()
+
+    user_words = [UserWord() for word in words]
 
     return list(user_words)
 

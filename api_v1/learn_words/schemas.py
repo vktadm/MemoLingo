@@ -20,7 +20,7 @@ class NewUserWord(UserWordBase):
 
 class UserWord(UserWordBase):
     """Схема для слова,
-    которого еще есть в таблице UserProgress"""
+    которое есть в таблице UserProgress"""
 
     model_config = ConfigDict(from_attributes=True)  # берем только атрибуты
     user_id: int

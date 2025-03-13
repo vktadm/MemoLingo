@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .schemas import NewUserWord, UserWord
+from .schemas import UserWord
 from . import crud
 from core.models import db_helper
 
@@ -41,7 +41,7 @@ async def check_word(
 
 @router.get(
     "/words/{user_id}/",
-    response_model=list[NewUserWord],
+    response_model=list[UserWord],
 )
 async def get_user_words(
     user_id: int, session: AsyncSession = Depends(db_helper.session_dependency)
