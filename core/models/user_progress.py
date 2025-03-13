@@ -15,6 +15,7 @@ from .status import Status
 
 
 class UserProgress(Base):
+    # TODO: Сейчас возможно создавать UserProgres для несуществующего User
     __table_args__ = (UniqueConstraint("user_id", "word_id", name="user_word"),)
 
     status: Mapped[Status] = mapped_column(Enum(Status), default=Status.NotStudy)
