@@ -1,28 +1,46 @@
 from pathlib import Path
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
+from environs import Env
+
+env = Env()
+env.read_env()
 
 BASE_DIR = Path(__file__).parent.parent
-DB_PATH = BASE_DIR / "db.sqlite3"
+
+# Development database
+DB_PATH = BASE_DIR / env("DB_SQLITE")
 
 
-class DbSettings(BaseModel):
+class PostgreSQLSettings(BaseModel):
+    name: str = env("DB_NAME")
+    user: str = env("DB_USER")
+    password: str = env("DB_PASSWORD")
+    host: str = env("DB_HOST")
+    port: int = env("DB_PORT")
+    echo: bool = True  # TODO: remove if not debug
+
+
+class RedisSettings(BaseModel):
+    host: str = env("REDIS_HOST")
+    port: int = env("REDIS_PORT")
+    db: int = env("REDIS_DB")
+
+
+class SQliteSettings(BaseModel):
     url: str = f"sqlite+aiosqlite:///{DB_PATH}"
-    echo: bool = True  # TODO: отладка
+    echo: bool = True  # TODO: remove if not debug
 
 
 class AuthJWT(BaseModel):
-    private_key_path: Path = BASE_DIR / "certs" / "jwt-private.pem"
-    public_key_path: Path = BASE_DIR / "certs" / "jwt-public.pem"
-    algorithms: str = "RS256"
+    algorithm: str = "HS256"
+    secret: str = env("SECRET_KEY")
     access_token_expire_minutes: int = 15
-    # access_token_expire_minutes: int = 3
 
 
 class Settings(BaseSettings):
-    api_v1_prefix: str = "/api/v1"
-    api_basic: str = "/api/basic"
-    db: DbSettings = DbSettings()
+    api_prefix: str = "/api"
+    db: SQliteSettings = SQliteSettings()
     auth_jwt: AuthJWT = AuthJWT()
 
 

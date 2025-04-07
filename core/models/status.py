@@ -2,5 +2,7 @@ from enum import Enum
 
 
 class Status(Enum):
-    NotStudy = "Новое слово"
-    EndStudy = "Заученное слово"
+    new = "new"
+    known = "know"
+    revise = "revise"
+    end = "end"

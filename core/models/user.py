@@ -14,9 +14,9 @@ class User(Base):
     password: Mapped[str | None] = mapped_column(default="", server_default="")
     email: Mapped[str | None] = mapped_column(default="", server_default="")
 
-    words: Mapped[List["Word"]] = relationship(
-        secondary="userprogress", back_populates="users"
-    )
+    # words: Mapped[List["Word"]] = relationship(
+    #     secondary="userprogress", back_populates="users"
+    # )
 
     def __str__(self):
         return f"{self.__class__.__name__} (id={self.id}) (username={self.username!r})"

@@ -6,8 +6,7 @@ from fastapi import FastAPI
 # from core.models import Base, db_helper
 from core.config import settings
 
-from api_v1 import router as api_v1_routers
-from api_basic import router as api_basic_router
+from api import router
 
 
 # Блок для создания таблиц без alembic
@@ -19,7 +18,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(router=api_v1_routers, prefix=settings.api_v1_prefix)
+app.include_router(router=router, prefix=settings.api_prefix)
 # app.include_router(router=api_basic_router, prefix=settings.api_basic)
 
 
