@@ -1,4 +1,3 @@
-from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.schemas.user_word import CreateUserWord
 from api.schemas.word import Word
-from core.models import Word, UserWord, User
+from database import Word, UserWord, User
 
 
 async def user_by_id(

@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
-from core.models import Word
+from database import Word
 
 from api.schemas.word import WordCreate, WordUpdate
 

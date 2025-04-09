@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from api.handlers import routers
 
 # Авторизация
-from api.auth.endpoints import router as auth_router
+from api.auth.handlers import router as auth_router
 
 
 router = APIRouter()

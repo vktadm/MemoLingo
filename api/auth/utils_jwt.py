@@ -1,7 +1,7 @@
 import jwt
 from datetime import timedelta, datetime
 
-from core.config import settings
+from config import settings
 
 
 def encode_jwt(

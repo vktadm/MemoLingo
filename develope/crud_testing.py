@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 # from sqlalchemy.engine import Result
-from core.models import db_helper, User, Category, Word
+from database import db_helper, User, Category, Word
 
 
 async def create_user(session: AsyncSession, username: str) -> User:

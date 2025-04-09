@@ -1,11 +1,10 @@
 from typing import Annotated
 
 from fastapi import Form, HTTPException, status, Depends
-from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import User, db_helper
+from database import User, db_helper
 from api.auth import crypto
 
 
@@ -37,16 +36,10 @@ async def create_user(
     # email: EmailStr = Form(default=None),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> User:
+    # TODO: Обработка ошибок
     user = User(username=username, password=crypto.hash_password(password))
-    try:
-        session.add(user)
-        await session.commit()
-    # TODO: Добавить толковую валидацию ошибок
-    except Exception as e:
-        HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Пользоватнль НЕ создан",
-        )
+    session.add(user)
+    await session.commit()
     return user
 
 

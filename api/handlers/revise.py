@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.schemas import UserWord, Word
-from api.handlers.crud import revise as crud
-from core.models import db_helper
+from api.schemas import Word
+from api.services import revise as crud
+from database import db_helper
 
 router = APIRouter(prefix="/revise", tags=["Revise Words"])
 

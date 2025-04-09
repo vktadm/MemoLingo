@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from core.models.status import Status
+from database.status import Status
 
 
 class UserWord(BaseModel):

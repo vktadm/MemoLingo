@@ -3,7 +3,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from core.models import Word, UserWord, User, Status
+from database import Word, UserWord, User, Status
 
 
 async def user_by_id(

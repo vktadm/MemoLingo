@@ -1,5 +1,3 @@
-from core.models import Status
-
 word = [
     {"id": 1, "wrd": "car", "translation": "машина"},
     {"id": 2, "wrd": "house", "translation": "дом"},

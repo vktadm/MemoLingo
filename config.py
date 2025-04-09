@@ -13,11 +13,14 @@ DB_PATH = BASE_DIR / env("DB_SQLITE")
 
 
 class PostgreSQLSettings(BaseModel):
-    name: str = env("DB_NAME")
-    user: str = env("DB_USER")
-    password: str = env("DB_PASSWORD")
-    host: str = env("DB_HOST")
-    port: int = env("DB_PORT")
+    url: str = (
+        f"postgresql+asyncpg://"
+        f"{env('DB_USER')}:"
+        f"{env("DB_PASSWORD")}@"
+        f"{env("DB_HOST")}:"
+        f"{env("DB_PORT")}/"
+        f"{env("DB_NAME")}"
+    )
     echo: bool = True  # TODO: remove if not debug
 
 
@@ -40,7 +43,9 @@ class AuthJWT(BaseModel):
 
 class Settings(BaseSettings):
     api_prefix: str = "/api"
-    db: SQliteSettings = SQliteSettings()
+    # db: SQliteSettings = SQliteSettings()
+    db: PostgreSQLSettings = PostgreSQLSettings()
+    cache: RedisSettings = RedisSettings()
     auth_jwt: AuthJWT = AuthJWT()
 
 

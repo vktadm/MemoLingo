@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import String
+from sqlalchemy import String, LargeBinary
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class User(Base):
     username: Mapped[str] = mapped_column(String(32), unique=True)
-    password: Mapped[str | None] = mapped_column(default="", server_default="")
+    password: Mapped[str] = mapped_column(String(120))
     email: Mapped[str | None] = mapped_column(default="", server_default="")
 
     # words: Mapped[List["Word"]] = relationship(

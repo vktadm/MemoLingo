@@ -1,13 +1,14 @@
 from fastapi import APIRouter, Depends
 
 from api.schemas.user import User
-from api.auth import crud, utils_jwt
+from api.auth import services, utils_jwt
 
 router = APIRouter(tags=["AUTH"])
 
 
 @router.post("/login")
-async def login(user: User = Depends(crud.validate_user)):
+async def login(user: User = Depends(services.validate_user)):
+    """Авторизация с генерацией JWT токена."""
     jwt_payload = {
         "sub": user.username,
         "username": user.username,
@@ -22,7 +23,8 @@ async def login(user: User = Depends(crud.validate_user)):
 
 
 @router.post("/register")
-async def register(user: User = Depends(crud.create_user)):
+async def register(user: User = Depends(services.create_user)):
+    """Регистрация пользователя с login, password."""
     return {
         "message": "Регистрация прошла успешно",
         "username": user.username,

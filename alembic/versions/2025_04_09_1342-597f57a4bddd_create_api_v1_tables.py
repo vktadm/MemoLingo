@@ -1,8 +1,8 @@
-"""Create structure
+"""Create api_v1 tables
 
-Revision ID: af8e47867a66
+Revision ID: 597f57a4bddd
 Revises:
-Create Date: 2025-04-07 21:10:03.440892
+Create Date: 2025-04-09 13:42:33.116967
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "af8e47867a66"
+revision: str = "597f57a4bddd"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -74,10 +74,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column(
-            "t_stamp",
-            sa.DateTime(),
-            server_default=sa.text("(CURRENT_TIMESTAMP)"),
-            nullable=True,
+            "t_stamp", sa.DateTime(), server_default=sa.text("now()"), nullable=True
         ),
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("word_id", sa.Integer(), nullable=False),

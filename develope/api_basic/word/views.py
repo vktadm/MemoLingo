@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.schemas.word import Word, WordCreate, WordUpdate
 from . import crud
 from .dependencies import word_by_id
-from core.models import db_helper
+from database import db_helper
 
 router = APIRouter(tags=["Words"])
 
