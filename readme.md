@@ -2,9 +2,10 @@
 Приложение для изучения английских слов.
 ### Технологии
 - FastAPI
-- PostgreSQL (SQLite - dev)
+- PostgreSQL
 - SQLAlchemy
-- loggin
+- Redis
+- Docker
 ***
 ### Функционал
 - Категории слов

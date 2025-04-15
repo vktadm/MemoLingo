@@ -3,6 +3,4 @@
 .idea/
 __pycache__
 .env
-temp.txt
-db.sqlite3
-/certs/
+develope

@@ -16,12 +16,12 @@
 
 
 --Получить слова со статусом "NotStudy"
-select *
-from word
-where id in (
-    select word_id
-    from userprogress as up
-    where up.user_id = 1 and up.status = 'NotStudy'
-);
+--select *
+--from word
+--where id in (
+--    select word_id
+--    from userprogress as up
+--    where up.user_id = 1 and up.status = 'NotStudy'
+--);
 
 

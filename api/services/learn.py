@@ -3,8 +3,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from api.schemas.user_word import CreateUserWord
-from api.schemas.word import Word
+from api.schemas import CreateUserWordSchema
 from database import Word, UserWord, User
 
 
@@ -51,7 +50,7 @@ async def get_new_user_words(
 async def add_new_user_words(
     session: AsyncSession,
     user_id: int,
-    new_words: list[CreateUserWord],
+    new_words: list[CreateUserWordSchema],
 ) -> list[UserWord]:
     """Создает UserWord для каждого слова."""
 

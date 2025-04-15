@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from database.status import Status
 
 
-class UserWord(BaseModel):
+class UserWordSchema(BaseModel):
     """"""
 
     id: int | None = None
@@ -11,7 +11,7 @@ class UserWord(BaseModel):
     status: Status | None
 
 
-class CreateUserWord(BaseModel):
+class CreateUserWordSchema(BaseModel):
     """"""
 
     user_id: int

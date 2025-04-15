@@ -1,10 +1,11 @@
-from .user import User
-from .user_word import UserWord, CreateUserWord
-from .word import Word
+from .user import UserSchema, UserLoginSchema
+from .user_word import UserWordSchema, CreateUserWordSchema
+from .word import WordSchema
 
 __all__ = {
-    "Word",
-    "User",
-    "UserWord",
-    "CreateUserWord",
+    "WordSchema",
+    "UserSchema",
+    "UserLoginSchema",
+    "UserWordSchema",
+    "CreateUserWordSchema",
 }

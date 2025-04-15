@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.schemas import Word
+from api.schemas import WordSchema
 from api.services import revise as crud
 from database import db_helper
 
@@ -41,7 +41,7 @@ async def check_word(
 @router.get("/words/{user_id}/")
 async def get_user_words(
     user_id: int, session: AsyncSession = Depends(db_helper.session_dependency)
-) -> list[Word]:
+) -> list[WordSchema]:
     """Получает слова для повторения."""
     # TODO Вынести в dependencies
     user = await crud.user_by_id(user_id=user_id, session=session)

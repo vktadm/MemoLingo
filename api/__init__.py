@@ -2,15 +2,12 @@ from fastapi import APIRouter
 
 from api.handlers import routers
 
-# Авторизация
-from api.auth.handlers import router as auth_router
-
 
 router = APIRouter()
 
-# Авторизация
+# Подключаем API hendlers
 for itm in routers:
     router.include_router(router=itm)
 
 # Авторизация
-router.include_router(router=auth_router, prefix="/auth")
+# router.include_router(router=auth_router, prefix="/auth")

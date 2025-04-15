@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Word(BaseModel):
+class WordSchema(BaseModel):
     id: int
     wrd: str
     translation: str

@@ -12,16 +12,25 @@ BASE_DIR = Path(__file__).parent.parent
 DB_PATH = BASE_DIR / env("DB_SQLITE")
 
 
-class PostgreSQLSettings(BaseModel):
-    url: str = (
-        f"postgresql+asyncpg://"
-        f"{env('DB_USER')}:"
-        f"{env("DB_PASSWORD")}@"
-        f"{env("DB_HOST")}:"
-        f"{env("DB_PORT")}/"
-        f"{env("DB_NAME")}"
-    )
+class PostgresSettings(BaseModel):
+    DB_DRIVER: str = "postgresql+asyncpg"
+    DB_USER: str = env("DB_USER")
+    DB_PASSWORD: str = env("DB_PASSWORD")
+    DB_HOST: int = env("DB_HOST")
+    DB_PORT: int = env("DB_PORT")
+    DB_NAME: str = env("DB_NAME")
     echo: bool = True  # TODO: remove if not debug
+
+    @property
+    def get_url(self) -> str:
+        return (
+            f"{self.DB_DRIVER}://"
+            f"{self.DB_USER}:"
+            f"{self.DB_PASSWORD}@"
+            f"{self.DB_HOST}:"
+            f"{self.DB_PORT}/"
+            f"{self.DB_NAME}"
+        )
 
 
 class RedisSettings(BaseModel):
@@ -42,9 +51,9 @@ class AuthJWT(BaseModel):
 
 
 class Settings(BaseSettings):
-    api_prefix: str = "/api"
+    api_prefix: str = "/api/v1"
     # db: SQliteSettings = SQliteSettings()
-    db: PostgreSQLSettings = PostgreSQLSettings()
+    db: PostgresSettings = PostgresSettings()
     cache: RedisSettings = RedisSettings()
     auth_jwt: AuthJWT = AuthJWT()
 

@@ -6,7 +6,7 @@ from sqlalchemy.exc import (
     OperationalError,
 )
 
-from api.schemas import UserWord, CreateUserWord, Word
+from api.schemas import UserWordSchema, CreateUserWordSchema, WordSchema
 from api.services import learn as crud
 from api.repository.user import UsersRepository
 from database import db_helper
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/learn", tags=["Learn Words"])
 @router.get("/words/{user_id}/")
 async def get_user_words(
     user_id: int, session: AsyncSession = Depends(db_helper.session_dependency)
-) -> list[Word]:
+) -> list[WordSchema]:
     """Получает новые слова для изучения."""
     repository = UsersRepository(session)
     user = await repository.get_user(user_id=user_id)
@@ -46,12 +46,12 @@ async def get_user_words(
 
 @router.post(
     "/words/{user_id}/",
-    response_model=list[UserWord],
+    response_model=list[UserWordSchema],
     status_code=status.HTTP_201_CREATED,
 )
 async def add_user_words(
     user_id: int,
-    new_words: list[CreateUserWord],
+    new_words: list[CreateUserWordSchema],
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     """Создает прогресс по новым словам."""
