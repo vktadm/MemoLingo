@@ -8,27 +8,19 @@ from sqlalchemy.exc import (
 
 from api.schemas import UserWordSchema, CreateUserWordSchema, WordSchema
 from api.services import learn as crud
-from api.repository.user import UsersRepository
+from api.dependencies import get_request_user_id
 from database import db_helper
 
 
 router = APIRouter(prefix="/learn", tags=["Learn Words"])
 
 
-@router.get("/words/{user_id}/")
+@router.get("/words/", response_model=list[WordSchema])
 async def get_user_words(
-    user_id: int, session: AsyncSession = Depends(db_helper.session_dependency)
-) -> list[WordSchema]:
+    user_id: int = Depends(get_request_user_id),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
     """Получает новые слова для изучения."""
-    repository = UsersRepository(session)
-    user = await repository.get_user(user_id=user_id)
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"ERROR: User {user_id} not found!",
-        )
-
     words = await crud.get_new_user_words(
         session=session,
         user_id=user_id,
@@ -40,33 +32,24 @@ async def get_user_words(
             status_code=status.HTTP_204_NO_CONTENT,
             detail=f"No words for user_id: {user_id}",
         )
-
     return words
 
 
 @router.post(
-    "/words/{user_id}/",
+    "/words/",
     response_model=list[UserWordSchema],
     status_code=status.HTTP_201_CREATED,
 )
 async def add_user_words(
-    user_id: int,
     new_words: list[CreateUserWordSchema],
+    user_id: int = Depends(get_request_user_id),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     """Создает прогресс по новым словам."""
-    repository = UsersRepository(session)
-    user = await repository.get_user(user_id=user_id)
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"ERROR: User {user_id} not found!",
-        )
     try:
         user_words = await crud.add_new_user_words(
-            session=session,
             user_id=user_id,
+            session=session,
             new_words=new_words,
         )
     except IntegrityError as e:

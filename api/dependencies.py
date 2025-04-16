@@ -1,6 +1,7 @@
-from fastapi import Depends
+from fastapi import Depends, Request, security, Security, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.exceptions import TokenExpired, TokenException
 from api.repository import UsersRepository
 from api.services import UserService
 from api.services.auth import AuthService
@@ -24,3 +25,21 @@ def get_user_service(
     auth_service: AuthService = Depends(get_auth_service),
 ) -> UserService:
     return UserService(user_repository=user_repository, auth_service=auth_service)
+
+
+reusable_oauth2 = security.HTTPBearer()
+
+
+async def get_request_user_id(
+    auth_service: AuthService = Depends(get_auth_service),
+    token: security.http.HTTPAuthorizationCredentials = Security(reusable_oauth2),
+) -> int:
+    try:
+        user_id: int = await auth_service.get_user_id_by_access_token(
+            access_token=token.credentials
+        )
+    except TokenExpired as e:
+        raise HTTPException(**e.to_dict)
+    except TokenException as e:
+        raise HTTPException(**e.to_dict)
+    return user_id

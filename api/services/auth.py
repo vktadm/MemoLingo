@@ -1,9 +1,11 @@
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import jwt
+from jwt import ExpiredSignatureError, PyJWTError
 
-from api.schemas import UserLoginSchema
+from api.exceptions import TokenExpired, TokenException
+from api.schemas import UserLoginSchema, UserSchema
 from api.repository import UsersRepository
 from api.crypto import Crypto
 from api import exceptions
@@ -36,6 +38,15 @@ class AuthService:
         access_token = self.encode_jwt(payload=jwt_payload)
         return UserLoginSchema(access_token=access_token)
 
+    async def get_user_id_by_access_token(self, access_token: str) -> int:
+        try:
+            payload = self.decode_jwt(token=access_token)
+        except ExpiredSignatureError:
+            raise TokenExpired
+        except PyJWTError:
+            raise TokenException
+        return payload["id"]
+
     @staticmethod
     def encode_jwt(
         payload: dict,
@@ -45,14 +56,14 @@ class AuthService:
     ):
         """Кодирование JWT."""
         to_encode = payload.copy()
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         expire = now + timedelta(minutes=expire_minutes)
 
         to_encode.update(
             exp=expire,
             iat=now,
         )
-        encoded = jwt.encode(payload, key, algorithm=algorithm)
+        encoded = jwt.encode(to_encode, key, algorithm=algorithm)
         return encoded
 
     @staticmethod

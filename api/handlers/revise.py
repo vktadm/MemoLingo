@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.schemas import WordSchema
+from api.dependencies import get_request_user_id
+from api.schemas import WordSchema, UserWordSchema
 from api.services import revise as crud
 from database import db_helper
 
@@ -10,12 +11,12 @@ router = APIRouter(prefix="/revise", tags=["Revise Words"])
 
 @router.get(
     "/random/",
-    # response_model=list[str],
+    response_model=list[str],
 )
 async def random_words(
     word_id: int,
     session: AsyncSession = Depends(db_helper.session_dependency),
-) -> list[str]:
+):
     """Получает 3 случайных слова из БД."""
     # TODO Сейчас мы можем получить слова к несуществующему word_id
     words = await crud.get_random_words(
@@ -38,20 +39,13 @@ async def check_word(
     return wrd == user_choice
 
 
-@router.get("/words/{user_id}/")
+@router.get("/words", response_model=list[WordSchema])
 async def get_user_words(
-    user_id: int, session: AsyncSession = Depends(db_helper.session_dependency)
-) -> list[WordSchema]:
+    user_id: int = Depends(get_request_user_id),
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
     """Получает слова для повторения."""
     # TODO Вынести в dependencies
-    user = await crud.user_by_id(user_id=user_id, session=session)
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"ERROR: User {user_id} not found!",
-        )
-
     words = await crud.get_user_words(
         session=session,
         user_id=user_id,

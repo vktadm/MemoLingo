@@ -3,18 +3,8 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from api.schemas import CreateUserWordSchema
-from database import Word, UserWord, User
-
-
-async def user_by_id(
-    user_id: int,
-    session: AsyncSession,
-) -> User | None:
-    """Проверяет существование пользователя в БД."""
-
-    user = await session.get(User, user_id)
-    return user
+from api.schemas import CreateUserWordSchema, UserWordSchema
+from database import Word, UserWord
 
 
 async def get_new_user_words(
@@ -22,7 +12,7 @@ async def get_new_user_words(
     user_id: int,
     quantity_words: int,
     category: str = None,
-) -> list[Word]:
+) -> list[Word] | None:
     """
     Получает {quantity_words} слов, которых нет в UserProgress.
 
@@ -40,24 +30,20 @@ async def get_new_user_words(
         )
         .limit(quantity_words)
     )
-
     result: Result = await session.execute(stmt)
     user_words = result.scalars().all()
-
     return list(user_words)
 
 
 async def add_new_user_words(
-    session: AsyncSession,
     user_id: int,
+    session: AsyncSession,
     new_words: list[CreateUserWordSchema],
 ) -> list[UserWord]:
     """Создает UserWord для каждого слова."""
-
-    # TODO Что будет если 1 слово?
-    words = [UserWord(**new_word.model_dump()) for new_word in new_words]
-
+    words = [
+        UserWord(**new_word.model_dump(), user_id=user_id) for new_word in new_words
+    ]
     session.add_all(words)
     await session.commit()
-
     return list(words)

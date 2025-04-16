@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from sqlalchemy import select, insert, Result
+from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import User

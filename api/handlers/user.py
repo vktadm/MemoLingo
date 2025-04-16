@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Form, HTTPException
 
 from api.dependencies import get_user_service
 from api.exceptions import UserAlreadyExists
-from api.schemas import UserLoginSchema
+from api.schemas import UserLoginSchema, UserSchema
 from api.services import UserService
 
 router = APIRouter(prefix="/users", tags=["USERS"])
@@ -13,9 +13,9 @@ router = APIRouter(prefix="/users", tags=["USERS"])
 @router.get("/")
 async def get_users(
     service: Annotated[UserService, Depends(get_user_service)],
-) -> list:
+) -> list[UserSchema]:
     """Получает всех существующих пользователей."""
-    return await service.user_repository.get_users()
+    return await service.get_users()
 
 
 @router.post("/register")

@@ -4,8 +4,8 @@ from api.handlers.user import router as user_router
 from api.handlers.auth import router as auth_router
 
 routers = [
-    # learn_router,
-    # revise_router,
+    learn_router,
+    revise_router,
     user_router,
     auth_router,
 ]

@@ -3,16 +3,7 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from database import Word, UserWord, User, Status
-
-
-async def user_by_id(
-    user_id: int,
-    session: AsyncSession,
-) -> User | None:
-    """Проверяет существование пользователя в БД."""
-    user = await session.get(User, user_id)
-    return user
+from database import Word, UserWord, Status
 
 
 async def get_user_words(

@@ -12,7 +12,7 @@ class MainException(Exception):
 
 class UserAlreadyExists(MainException):
     detail = "User already exists! Create new username."
-    status_code = 404
+    status_code = 403
 
 
 class UserNotFound(MainException):
@@ -21,5 +21,14 @@ class UserNotFound(MainException):
 
 
 class UserIncorrectPassword(MainException):
-    detail: str = "Incorrect password! Try again."
-    status_code: int = 401
+    detail = "Incorrect password! Try again."
+    status_code = 401
+
+
+class TokenException(MainException):
+    detail = "Invalid token."
+    status_code = 401
+
+
+class TokenExpired(TokenException):
+    detail = "The token's lifetime has expired!"

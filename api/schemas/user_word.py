@@ -3,17 +3,10 @@ from database.status import Status
 
 
 class UserWordSchema(BaseModel):
-    """"""
-
-    id: int | None = None
-    user_id: int
-    word_id: int
-    status: Status | None
+    id: int
+    status: Status
 
 
 class CreateUserWordSchema(BaseModel):
-    """"""
-
-    user_id: int
     word_id: int
     status: Status
