@@ -15,7 +15,10 @@ from database import db_helper
 router = APIRouter(prefix="/learn", tags=["Learn Words"])
 
 
-@router.get("/words/", response_model=list[WordSchema])
+@router.get(
+    "/words/",
+    response_model=list[WordSchema],
+)
 async def get_user_words(
     user_id: int = Depends(get_request_user_id),
     session: AsyncSession = Depends(db_helper.session_dependency),
@@ -26,7 +29,6 @@ async def get_user_words(
         user_id=user_id,
         quantity_words=3,
     )
-
     if not words:
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,

@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from jwt import ExpiredSignatureError, PyJWTError
 
+from api.clients import GoogleClient
 from api.exceptions import TokenExpired, TokenException
 from api.schemas import UserLoginSchema, UserSchema
 from api.repository import UsersRepository
@@ -15,6 +16,7 @@ from config import settings
 @dataclass
 class AuthService:
     user_repository: UsersRepository
+    google_client: GoogleClient
 
     async def login(
         self,
@@ -47,6 +49,26 @@ class AuthService:
             raise TokenException
         return payload["id"]
 
+    async def auth_google(self, code: str) -> UserLoginSchema:
+        user_data = self.google_client.get_user_info(code)
+        user = UserSchema(
+            username=user_data.email,
+            google_access_token=user_data.access_token,
+            email=user_data.email,
+        )
+        user = await self.user_repository.create_user(user)
+        jwt_payload = {
+            "sub": user.username,
+            "id": user.id,
+            "username": user.username,
+        }
+        access_token = self.encode_jwt(payload=jwt_payload)
+        return UserLoginSchema(access_token=access_token)
+
+    @staticmethod
+    async def get_google_redirect_url() -> str:
+        return settings.auth_google.get_url
+
     @staticmethod
     def encode_jwt(
         payload: dict,
@@ -75,31 +97,3 @@ class AuthService:
         """Декодирование JWT."""
         decoded = jwt.decode(jwt=token, key=key, algorithms=algorithm)
         return decoded
-
-
-# def get_current_auth_token(
-#     # credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
-#     token: str = Depends(oauth_bearer),
-# ) -> dict:
-#     # token = credentials.credentials
-#     try:
-#         payload = utils_jwt.decode_jwt(token=token)
-#     except InvalidTokenError as e:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail=f"Invalid token error: {e}",
-#         )
-#     return payload
-#
-#
-# def get_current_auth_user(
-#     payload: dict = Depends(get_current_auth_token),
-# ) -> UserSchema:
-#     username: str | None = payload.get("sub")
-#
-#     if user := users_db.get(username):
-#         return user
-#     raise HTTPException(
-#         status_code=status.HTTP_401_UNAUTHORIZED,
-#         detail="Token invalid (user not found)",
-#     )

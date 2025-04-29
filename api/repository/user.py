@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.schemas import UserSchema
 from database import User
 
 
@@ -29,19 +30,13 @@ class UsersRepository:
         elif username:
             stmt = select(User).where(User.username == username)
             user = await self.session.scalar(stmt)
-            print(user)
             return user
         return None
 
-    async def create_user(
-        self,
-        username: str,
-        password: str,
-        # email: EmailStr = Form(default=None),
-    ) -> User | None:
+    async def create_user(self, user_data: UserSchema) -> User | None:
         """Создает User."""
         # TODO: Обработка ошибок
-        user = User(username=username, password=password)
-        self.session.add(user)
+        user = User(**user_data.model_dump())
+        self.session.add(user_data)
         await self.session.commit()
         return user

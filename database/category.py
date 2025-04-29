@@ -1,7 +1,7 @@
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from sqlalchemy import String
 
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class Category(Base):
     title: Mapped[str] = mapped_column(String(), unique=True)
     translation: Mapped[str]
-    description: Mapped[str | None] = mapped_column(default="", server_default="")
+    description: Mapped[Optional[str]] = mapped_column(nullable=True)
     # words: Mapped[List["Word"]] = relationship(
     #     secondary="category_word_association", back_populates="categories"
     # )

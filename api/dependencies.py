@@ -1,10 +1,12 @@
-from fastapi import Depends, Request, security, Security, HTTPException
+from fastapi import Depends, security, Security, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.clients import GoogleClient
 from api.exceptions import TokenExpired, TokenException
 from api.repository import UsersRepository
 from api.services import UserService
 from api.services.auth import AuthService
+from config import GoogleSettings
 from database import db_helper
 
 
@@ -14,10 +16,18 @@ def get_user_repository(
     return UsersRepository(session=session)
 
 
+def get_google_client() -> GoogleClient:
+    return GoogleClient(settings=GoogleSettings())
+
+
 def get_auth_service(
     user_repository: UsersRepository = Depends(get_user_repository),
+    google_client=Depends(get_google_client),
 ) -> AuthService:
-    return AuthService(user_repository=user_repository)
+    return AuthService(
+        user_repository=user_repository,
+        google_client=google_client,
+    )
 
 
 def get_user_service(
