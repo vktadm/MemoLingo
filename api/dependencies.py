@@ -4,9 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from api.clients import GoogleClient
 from api.exceptions import TokenExpired, TokenException
 from api.repository import UsersRepository
-from api.services import UserService
-from api.services.auth import AuthService
-from api.services.jwt import JWTService
+from api.services import UserService, CryptoService, AuthService, JWTService
 from config import GoogleSettings, JWTSettings
 from database import db_helper
 
@@ -25,23 +23,32 @@ def get_jwt_service() -> JWTService:
     return JWTService(settings=JWTSettings())
 
 
+def get_crypto_service() -> CryptoService:
+    return CryptoService()
+
+
 def get_auth_service(
     user_repository: UsersRepository = Depends(get_user_repository),
     google_client: GoogleClient = Depends(get_google_client),
     jwt: JWTService = Depends(get_jwt_service),
+    crypto_service: CryptoService = Depends(get_crypto_service),
 ) -> AuthService:
     return AuthService(
         user_repository=user_repository,
         google_client=google_client,
         jwt_service=jwt,
+        crypto_service=crypto_service,
     )
 
 
 def get_user_service(
     user_repository: UsersRepository = Depends(get_user_repository),
-    auth_service: AuthService = Depends(get_auth_service),
+    crypto_service: CryptoService = Depends(get_crypto_service),
 ) -> UserService:
-    return UserService(user_repository=user_repository, auth_service=auth_service)
+    return UserService(
+        user_repository=user_repository,
+        crypto_service=crypto_service,
+    )
 
 
 reusable_oauth2 = security.HTTPBearer()

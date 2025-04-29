@@ -1,4 +1,5 @@
 import requests
+import time
 from dataclasses import dataclass
 
 from api.schemas.auth import GoogleUserDataSchema
@@ -18,7 +19,11 @@ class GoogleClient:
                 "Authorization": f"Bearer {access_token}",
             },
         )
-        return GoogleUserDataSchema(**user_info.json(), access_token=access_token)
+        return GoogleUserDataSchema(
+            **user_info.json(),
+            google_access_token=access_token,
+            username=self._generate_random_username(),
+        )
 
     def _get_user_access_token(self, code) -> str:
         """Получает токен доступа."""
@@ -33,5 +38,8 @@ class GoogleClient:
             self.settings.TOKEN_URI,
             data=data,
         )
-        print(response)  # TODO: убрать
         return response.json()["access_token"]
+
+    @staticmethod
+    def _generate_random_username() -> str:
+        return f"user_{str(int(time.time()))[-10:]}"

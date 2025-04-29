@@ -3,7 +3,6 @@ from typing import Optional, List
 from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.schemas import UserCreateSchema
 from database import User
 
 
@@ -20,24 +19,61 @@ class UsersRepository:
         words = result.scalars().all()
         return list(words)
 
-    async def get_user(
+    async def get_user_by_id(
         self,
-        user_id: int = None,
-        username: str = None,
+        user_id: int,
     ) -> Optional[User]:
         """Получает User по user_id или username."""
-        if user_id:
-            return await self.session.get(User, user_id)
-        elif username:
-            stmt = select(User).where(User.username == username)
-            user = await self.session.scalar(stmt)
-            return user
-        return None
+        return await self.session.get(User, user_id)
 
-    async def create_user(self, user_data: UserCreateSchema) -> User:
+    async def get_user_by_username(
+        self,
+        username: str,
+    ) -> Optional[User]:
+        """Получает User по username."""
+        stmt = select(User).where(User.username == username)
+        return await self.session.scalar(stmt)
+
+    async def get_user_by_email(
+        self,
+        email: str,
+    ) -> Optional[User]:
+        """Получает User по username."""
+        stmt = select(User).where(User.email == email)
+        return await self.session.scalar(stmt)
+
+    async def create_user(
+        self,
+        username: str,
+        password: str,
+        email: Optional[str] = None,
+    ) -> User:
         """Создает User."""
         # TODO: Обработка ошибок
-        user = User(**user_data.model_dump())
-        self.session.add(user_data)
+        user = User(
+            username=username,
+            password=password,
+            email=email,
+        )
+        self.session.add(user)
+        await self.session.commit()
+        return user
+
+    async def create_google_user(
+        self,
+        username: str,
+        google_access_token: str,
+        name: Optional[str] = None,
+        email: Optional[str] = None,
+    ) -> User:
+        """Создает User с google_access_token."""
+        # TODO: Обработка ошибок
+        user = User(
+            username=username,
+            google_access_token=google_access_token,
+            name=name,
+            email=email,
+        )
+        self.session.add(user)
         await self.session.commit()
         return user

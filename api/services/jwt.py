@@ -22,10 +22,10 @@ class JWTService:
         )
         return encoded
 
-    def decode_jwt(self, token: str | bytes):
+    def decode_jwt(self, token: str):
         """Декодирование JWT."""
         decoded = jwt.decode(
-            jwt=self.settings.secret,
+            jwt=token,
             key=self.settings.secret,
             algorithms=self.settings.algorithm,
         )

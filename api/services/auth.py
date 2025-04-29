@@ -3,18 +3,20 @@ from typing import Optional
 from jwt import ExpiredSignatureError, PyJWTError
 
 from api.clients import GoogleClient
-from api.schemas import UserLoginSchema, UserCreateSchema
+from api.exceptions import UserNoCreate
+from api.schemas import UserLoginSchema
 from api.repository import UsersRepository
-from api.services import UserService, CryptoService, JWTService
 from api import exceptions
+from api.services.crypto import CryptoService
+from api.services.jwt import JWTService
 
 
 @dataclass
 class AuthService:
     user_repository: UsersRepository
-    user_service: UserService
     google_client: GoogleClient
     jwt_service: JWTService
+    crypto_service: CryptoService
 
     async def login(
         self,
@@ -22,21 +24,21 @@ class AuthService:
         password: str,
     ) -> Optional[UserLoginSchema]:
         """Авторизация по login и password."""
-        user = await self.user_repository.get_user(username=username)
+        user = await self.user_repository.get_user_by_username(username=username)
         if not user:
             raise exceptions.UserNotFound
-        if not CryptoService.validate_password(
+        if not self.crypto_service.validate_password(
             password=password,
             hashed_password=user.password,
         ):
             raise exceptions.UserIncorrectPassword
-        login_user = self.get_login_user(
+        access_token = self._get_access_token(
             user_id=user.id,
             username=user.username,
         )
-        return login_user
+        return UserLoginSchema(access_token=access_token)
 
-    def get_login_user(self, user_id: int, username: str) -> UserLoginSchema:
+    def _get_access_token(self, user_id: int, username: str) -> str:
         """Получает jwt-токен."""
         jwt_payload = {
             "sub": username,
@@ -44,19 +46,29 @@ class AuthService:
             "username": username,
         }
         # TODO: Ошибки при попытке кодирования?
-        access_token = self.jwt_service.encode_jwt(payload=jwt_payload)
-        return UserLoginSchema(access_token=access_token)
+        return self.jwt_service.encode_jwt(payload=jwt_payload)
 
     async def auth_google(self, code: str) -> UserLoginSchema:
         """Авторизация Google."""
         user_data = self.google_client.get_user_info(code)
-        new_user = UserCreateSchema(
-            username=user_data.email,
-            google_access_token=user_data.access_token,
-            email=user_data.email,
+        if user := await self.user_repository.get_user_by_email(user_data.email):
+            access_token = self._get_access_token(
+                user_id=user.id,
+                username=user.username,
+            )
+            return UserLoginSchema(access_token=access_token)
+
+        try:
+            user = await self.user_repository.create_google_user(
+                **user_data.model_dump()
+            )
+        except Exception:
+            raise UserNoCreate
+        access_token = self._get_access_token(
+            user_id=user.id,
+            username=user.username,
         )
-        user = await self.user_service.create_user(new_user)
-        return user
+        return UserLoginSchema(access_token=access_token)
 
     async def get_google_redirect_url(self) -> str:
         return self.google_client.settings.get_url

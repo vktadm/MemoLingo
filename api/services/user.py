@@ -1,35 +1,46 @@
 from dataclasses import dataclass
+from typing import Optional
 
-from api.services import CryptoService, AuthService
 from api.exceptions import UserAlreadyExists, UserNoCreate
+from api.exceptions.base import NoContent
 from api.repository import UsersRepository
-from api.schemas import UserCreateSchema, UserLoginSchema, UserSchema
+from api.schemas import UserSchema
+from api.services.crypto import CryptoService
 
 
 @dataclass
 class UserService:
     user_repository: UsersRepository
-    auth_service: AuthService
+    crypto_service: CryptoService
 
     async def create_user(
         self,
-        new_user: UserCreateSchema,
-    ) -> UserLoginSchema:
-        hashed_password: str = CryptoService.hash_password(new_user.password)
-        if await self.user_repository.get_user(username=new_user.username):
+        username: str,
+        password: str,
+        email: Optional[str] = None,
+    ) -> UserSchema:
+        hashed_password = self.crypto_service.hash_password(password)
+        if await self.user_repository.get_user_by_username(username=username):
             raise UserAlreadyExists
-        new_user.password = hashed_password
         try:
-            user = await self.user_repository.create_user(new_user)
-        except Exception as e:
+            user = await self.user_repository.create_user(
+                username=username, password=hashed_password, email=email
+            )
+        except Exception:
             raise UserNoCreate
-        login_user = self.auth_service.get_login_user(
-            user_id=user.id,
-            username=user.username,
-        )
-        return login_user
+        return UserSchema(id=user.id, username=user.username, email=user.email)
 
     async def get_users(self) -> list[UserSchema]:
         data = await self.user_repository.get_users()
-        users = [UserSchema(id=user.id, username=user.username) for user in data]
+        users = [
+            UserSchema(
+                id=user.id,
+                username=user.username,
+                email=user.email,
+                name=user.name,
+            )
+            for user in data
+        ]
+        if not users:
+            raise NoContent
         return users
