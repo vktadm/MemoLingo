@@ -3,7 +3,11 @@ from pydantic import BaseModel
 
 class GoogleUserDataSchema(BaseModel):
     id: int
-    email: str
     access_token: str
+    email: str
     verified_email: bool
     name: str
+
+
+class UserLoginSchema(BaseModel):
+    access_token: str

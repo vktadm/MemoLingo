@@ -6,7 +6,7 @@ __all__ = {
     "Category",
     "User",
     "Status",
-    "CategoryWordAssociation",
+    "CategoryWord",
     "UserWord",
 }
 
@@ -16,5 +16,5 @@ from .word import Word
 from .category import Category
 from .user import User
 from .status import Status
-from .category_word import CategoryWordAssociation
+from .category_word import CategoryWord
 from .user_word import UserWord

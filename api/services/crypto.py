@@ -1,7 +1,7 @@
 import bcrypt
 
 
-class Crypto:
+class CryptoService:
     @staticmethod
     def hash_password(password: str) -> str:
         salt = bcrypt.gensalt()

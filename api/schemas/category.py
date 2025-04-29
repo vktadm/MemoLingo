@@ -1,6 +1,7 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 
 class CategorySchema(BaseModel):
     title: str
-    # description: str | None
+    translation: str | None
+    description: str | None

@@ -1,13 +1,11 @@
 from typing import Annotated
-
 from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.responses import RedirectResponse
 
 from api.dependencies import get_auth_service
 from api.exceptions import UserNotFound, UserIncorrectPassword
 from api.schemas import UserLoginSchema
-
-from api.services.auth import AuthService
+from api.services import AuthService
 
 router = APIRouter(prefix="/auth", tags=["AUTH"])
 
@@ -18,7 +16,7 @@ async def login(
     password: Annotated[str, Form()],
     service: Annotated[AuthService, Depends(get_auth_service)],
 ):
-    """Авторизация с генерацией JWT токена."""
+    """Авторизация c login и password."""
     try:
         user: UserLoginSchema = await service.login(
             username=username, password=password

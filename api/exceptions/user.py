@@ -14,3 +14,8 @@ class UserNotFound(MainException):
 class UserIncorrectPassword(MainException):
     detail = "Incorrect password! Try again."
     status_code = 401
+
+
+class UserNoCreate(MainException):
+    detail = "Failed to create a user!"
+    status_code = 401

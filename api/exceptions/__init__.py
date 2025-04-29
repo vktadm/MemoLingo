@@ -5,6 +5,7 @@ __all__ = [
     "UserNotFound",
     "UserAlreadyExists",
     "UserIncorrectPassword",
+    "UserNoCreate",
     "TokenExpired",
     "TokenException",
 ]

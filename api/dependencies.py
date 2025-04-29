@@ -6,7 +6,8 @@ from api.exceptions import TokenExpired, TokenException
 from api.repository import UsersRepository
 from api.services import UserService
 from api.services.auth import AuthService
-from config import GoogleSettings
+from api.services.jwt import JWTService
+from config import GoogleSettings, JWTSettings
 from database import db_helper
 
 
@@ -20,13 +21,19 @@ def get_google_client() -> GoogleClient:
     return GoogleClient(settings=GoogleSettings())
 
 
+def get_jwt_service() -> JWTService:
+    return JWTService(settings=JWTSettings())
+
+
 def get_auth_service(
     user_repository: UsersRepository = Depends(get_user_repository),
-    google_client=Depends(get_google_client),
+    google_client: GoogleClient = Depends(get_google_client),
+    jwt: JWTService = Depends(get_jwt_service),
 ) -> AuthService:
     return AuthService(
         user_repository=user_repository,
         google_client=google_client,
+        jwt_service=jwt,
     )
 
 

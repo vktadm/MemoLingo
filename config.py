@@ -42,7 +42,7 @@ class SQliteSettings(BaseModel):
     echo: bool = True  # TODO: remove if not debug
 
 
-class AuthJWT(BaseModel):
+class JWTSettings(BaseModel):
     algorithm: str = "HS256"
     secret: str = env("SECRET_KEY")
     access_token_expire_minutes: int = 15
@@ -75,7 +75,7 @@ class Settings(BaseSettings):
     # db: SQliteSettings = SQliteSettings()
     db: PostgresSettings = PostgresSettings()
     cache: RedisSettings = RedisSettings()
-    auth_jwt: AuthJWT = AuthJWT()
+    auth_jwt: JWTSettings = JWTSettings()
     auth_google: GoogleSettings = GoogleSettings()
 
 

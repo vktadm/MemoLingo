@@ -1,5 +1,11 @@
 from .user import UserService
 from .auth import AuthService
-from api.crypto import Crypto
+from .crypto import CryptoService
+from .jwt import JWTService
 
-__all__ = ["UserService", "Crypto", "AuthService"]
+__all__ = [
+    "UserService",
+    "CryptoService",
+    "AuthService",
+    "JWTService",
+]

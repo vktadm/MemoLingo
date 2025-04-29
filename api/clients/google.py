@@ -9,7 +9,8 @@ from config import GoogleSettings
 class GoogleClient:
     settings: GoogleSettings
 
-    def get_user_info(self, code) -> GoogleUserDataSchema:
+    def get_user_info(self, code: str) -> GoogleUserDataSchema:
+        """Получает data из Google."""
         access_token = self._get_user_access_token(code)
         user_info = requests.get(
             "https://www.googleapis.com/oauth2/v1/userinfo",
@@ -20,6 +21,7 @@ class GoogleClient:
         return GoogleUserDataSchema(**user_info.json(), access_token=access_token)
 
     def _get_user_access_token(self, code) -> str:
+        """Получает токен доступа."""
         data = {
             "code": code,
             "client_id": self.settings.CLIENT_ID,
@@ -31,5 +33,5 @@ class GoogleClient:
             self.settings.TOKEN_URI,
             data=data,
         )
-        print(response)
+        print(response)  # TODO: убрать
         return response.json()["access_token"]
