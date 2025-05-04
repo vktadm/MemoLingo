@@ -1,8 +1,10 @@
-import redis
+from redis import asyncio as redis
+
+# import redis
 from config import settings
 
 
-def get_redis_connection() -> redis.Redis:
+async def get_redis_connection() -> redis.Redis:
     return redis.Redis(
         host=settings.cache.host,
         port=settings.cache.port,

@@ -45,7 +45,7 @@ class SQliteSettings(BaseModel):
 class JWTSettings(BaseModel):
     algorithm: str = "HS256"
     secret: str = env("SECRET_KEY")
-    access_token_expire_minutes: int = 15
+    access_token_expire_minutes: int = 3
 
 
 class GoogleSettings(BaseModel):
@@ -68,6 +68,15 @@ class GoogleSettings(BaseModel):
             "prompt": "consent",
         }
         return f"{base_url}?{urlencode(params)}"
+
+
+class SMTPSettings(BaseModel):
+    SMTP_SERVER = "smtp.example.com"
+    SMTP_PORT = 587
+    SMTP_USERNAME = "your_email@example.com"
+    SMTP_PASSWORD = "your_password"
+    EMAIL_FROM = "noreply@example.com"
+    EMAIL_CONFIRMATION_TEMPLATE = "confirmation_email.html"
 
 
 class Settings(BaseSettings):

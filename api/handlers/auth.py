@@ -2,12 +2,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.responses import RedirectResponse
 
-from api.dependencies import get_auth_service
+from api.dependencies import get_auth_service, get_logout_user
 from api.exceptions import UserNotFound, UserIncorrectPassword
 from api.schemas import UserLoginSchema
 from api.services import AuthService
 
-router = APIRouter(prefix="/auth", tags=["AUTH"])
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 @router.post("/login", response_model=UserLoginSchema)
@@ -26,6 +26,15 @@ async def login(
     except UserIncorrectPassword as e:
         raise HTTPException(**e.to_dict)
     return user
+
+
+@router.post("/logout")
+async def logout(
+    username: str = Depends(get_logout_user),
+):
+    return {
+        "message": f"{username} successfully logged out",
+    }
 
 
 @router.get(

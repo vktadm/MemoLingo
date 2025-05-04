@@ -7,7 +7,7 @@ from api.exceptions.base import NoContent
 from api.schemas import UserLoginSchema, UserSchema
 from api.services import UserService, AuthService
 
-router = APIRouter(prefix="/users", tags=["USERS"])
+router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.get("/", response_model=Optional[List[UserSchema]])
