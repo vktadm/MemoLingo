@@ -27,10 +27,7 @@ class AuthService:
     ) -> Optional[UserLoginSchema]:
         """Авторизация по login и password."""
         user = await self.user_repository.get_user_by_username(username=username)
-        if not user:
-            raise exceptions.UserNotFound
-
-        if not user.password:
+        if not user or not user.password:
             raise exceptions.UserNotFound
 
         if not self.crypto_service.validate_password(
@@ -62,13 +59,14 @@ class AuthService:
 
     async def auth_google(self, code: str) -> UserLoginSchema:
         """Авторизация Google."""
-        user_data = self.google_client.get_user_info(code)
+        user_data = await self.google_client.get_user_info(code)
         user = await self.user_repository.get_user_by_email(user_data.email)
         if not user:
             try:
                 user = await self.user_repository.create_google_user(
                     **user_data.model_dump()
                 )
+            # TODO: Обработка ошибок
             except Exception:
                 raise UserNoCreate
         access_token = self._get_access_token(
@@ -107,8 +105,8 @@ class AuthService:
             raise exceptions.TokenException
         return payload["username"]
 
-    async def logout(self, access_token: str) -> str:
-        """Аннулирует токен доступа."""
+    async def revoke_token(self, access_token: str) -> str:
+        """Отзывает токен доступа."""
         username = await self.get_username_by_access_token(access_token)
         await self.black_list.block_token(access_token)
         return username

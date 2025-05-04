@@ -1,4 +1,3 @@
-import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
@@ -20,7 +19,3 @@ def default_page():
     return {
         "message": "This is MemoLingo",
     }
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)

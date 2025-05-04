@@ -1,3 +1,4 @@
+import httpx
 from fastapi import Depends, security, Security, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
@@ -10,10 +11,6 @@ from api.services import UserService, CryptoService, AuthService, JWTService
 from config import GoogleSettings, JWTSettings
 from database import db_helper
 from cache import db_helper as cache_db_helper
-
-
-def get_redis_connection():
-    pass
 
 
 def get_user_repository(
@@ -84,12 +81,12 @@ async def get_request_user_id(
     return user_id
 
 
-async def get_logout_user(
+async def revoke_token_for_current_user(
     auth_service: AuthService = Depends(get_auth_service),
     token: security.http.HTTPAuthorizationCredentials = Security(reusable_oauth2),
 ):
     try:
-        username: str = await auth_service.logout(
+        username: str = await auth_service.revoke_token(
             access_token=token.credentials,
         )
     except TokenExpired as e:

@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.responses import RedirectResponse
 
-from api.dependencies import get_auth_service, get_logout_user
+from api.dependencies import get_auth_service, revoke_token_for_current_user
 from api.exceptions import UserNotFound, UserIncorrectPassword
 from api.schemas import UserLoginSchema
 from api.services import AuthService
@@ -28,9 +28,9 @@ async def login(
     return user
 
 
-@router.post("/logout")
-async def logout(
-    username: str = Depends(get_logout_user),
+@router.post("/token/revoke")
+async def revoke(
+    username: str = Depends(revoke_token_for_current_user),
 ):
     return {
         "message": f"{username} successfully logged out",

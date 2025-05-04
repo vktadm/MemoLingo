@@ -6,16 +6,18 @@ class TokenBlackListRepository:
         self.session = session
 
     async def add_token(self, token: str, expiration: int):
-        print(token, 0, expiration)
-        await self.session.set(token, 0, ex=expiration * 60)
+        async with self.session as s:
+            await s.set(token, 0, ex=expiration * 60)
 
     async def block_token(self, token: str):
-        ttl = await self.session.ttl(token)
-        if ttl != -2:
-            await self.session.setex(token, ttl, 1)
+        async with self.session as s:
+            ttl = await s.ttl(token)
+            if ttl != -2:
+                await s.setex(token, ttl, 1)
 
     async def token_is_expired(self, token: str) -> bool:
-        is_expired = await self.session.get(token)
+        async with self.session as s:
+            is_expired = await s.get(token)
         if not is_expired:
             return True
         return bool(int(is_expired.decode("utf-8")))

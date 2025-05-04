@@ -70,15 +70,6 @@ class GoogleSettings(BaseModel):
         return f"{base_url}?{urlencode(params)}"
 
 
-class SMTPSettings(BaseModel):
-    SMTP_SERVER = "smtp.example.com"
-    SMTP_PORT = 587
-    SMTP_USERNAME = "your_email@example.com"
-    SMTP_PASSWORD = "your_password"
-    EMAIL_FROM = "noreply@example.com"
-    EMAIL_CONFIRMATION_TEMPLATE = "confirmation_email.html"
-
-
 class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
     # db: SQliteSettings = SQliteSettings()

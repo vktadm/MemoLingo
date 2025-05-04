@@ -38,7 +38,7 @@ class UsersRepository:
         self,
         email: str,
     ) -> Optional[User]:
-        """Получает User по username."""
+        """Получает User по email."""
         stmt = select(User).where(User.email == email)
         return await self.session.scalar(stmt)
 
