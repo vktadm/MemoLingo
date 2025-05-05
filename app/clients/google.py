@@ -3,12 +3,12 @@ import time
 from dataclasses import dataclass
 
 from app.schemas.auth import GoogleUserDataSchema
-from app.config import GoogleSettings
+from app.settings import Settings
 
 
 @dataclass
 class GoogleClient:
-    settings: GoogleSettings
+    settings: Settings().auth_google
 
     async def get_user_info(self, code: str) -> GoogleUserDataSchema:
         """Получает data из Google."""

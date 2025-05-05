@@ -5,7 +5,7 @@ from app.exceptions import UserAlreadyExists, UserNoCreate
 from app.exceptions.base import NoContent
 from app.repository import UsersRepository
 from app.schemas import UserSchema
-from app.services.crypto import CryptoService
+from app.services.crypto_manager import CryptoService
 
 
 @dataclass

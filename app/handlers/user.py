@@ -22,12 +22,11 @@ async def get_users(
         raise HTTPException(**e.to_dict)
 
 
-@router.post("/register", response_model=Optional[UserLoginSchema])
+@router.post("/register", response_model=Optional[UserSchema])
 async def create_user(
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
     user_service: Annotated[UserService, Depends(get_user_service)],
-    auth_service: Annotated[AuthService, Depends(get_auth_service)],
 ):
     """Регистрация пользователя с login, password."""
     # Создаем пользователя.
@@ -40,12 +39,7 @@ async def create_user(
         raise HTTPException(**e.to_dict)
     except UserNoCreate as e:
         raise HTTPException(**e.to_dict)
-    # Авторизируем его.
-    login_user = await auth_service.login(
-        username=username,
-        password=password,
-    )
-    return login_user
+    return user
 
 
 @router.get("/about", response_model=UserSchema)

@@ -2,7 +2,7 @@ import jwt
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 
-from app.config import JWTSettings
+from app.settings import JWTSettings
 
 
 @dataclass
