@@ -1,5 +1,4 @@
 import pytest
-from dataclasses import dataclass
 
 from app.services import JWTService
 from app.settings import Settings
