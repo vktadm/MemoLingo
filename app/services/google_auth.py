@@ -30,7 +30,7 @@ class GoogleAuthService:
         """Генерирует ответ с токеном для аутентифицированного пользователя."""
         access_token = self._create_access_token(user)
         await self._store_token(access_token)
-        return UserLoginSchema(access_token=access_token)
+        return UserLoginSchema(access_token=access_token, id=user.id)
 
     async def _get_or_create_google_user(
         self, user_data: GoogleUserDataSchema

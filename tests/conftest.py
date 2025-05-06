@@ -7,4 +7,5 @@ pytest_plugins = [
     "tests.fixtures.auth.jwt_manager",
     "tests.fixtures.users.user_repository",
     "tests.fixtures.settings",
+    "tests.fixtures.users.user_model",
 ]

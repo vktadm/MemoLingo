@@ -4,7 +4,14 @@ from dataclasses import dataclass
 
 @dataclass
 class FakeTokenBlackListRepository:
-    pass
+    async def add_token(self, token: str):
+        pass
+
+    async def block_token(self, token: str):
+        pass
+
+    async def token_is_expired(self, token: str) -> bool:
+        return True
 
 
 @pytest.fixture
