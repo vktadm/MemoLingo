@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI, APIRouter
 from starlette.responses import JSONResponse
 
-from app.config import settings
+from app.settings import settings
 from app.handlers import routers
 
 

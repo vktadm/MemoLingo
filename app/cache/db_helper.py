@@ -1,12 +1,14 @@
-from redis import asyncio as redis
+from redis.asyncio import Redis
 
-# import redis
-from app.config import settings
+from app.settings import settings
 
 
-async def get_redis_connection() -> redis.Redis:
-    return redis.Redis(
+async def get_redis_session() -> Redis:
+    session = Redis(
         host=settings.cache.host,
         port=settings.cache.port,
         db=settings.cache.db,
     )
+    async with session as s:
+        yield s
+        await s.close()

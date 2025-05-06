@@ -2,15 +2,17 @@ import jwt
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 
-from app.config import JWTSettings
+from app.settings import JWTSettings
 
 
 @dataclass
 class JWTService:
-    settings: JWTSettings
+    """Сервис для работы с JWT (JSON Web Tokens)."""
+
+    settings: JWTSettings  # Конфигурация JWT из настроек приложения
 
     def encode_jwt(self, payload: dict):
-        """Кодирование JWT."""
+        """Генерирует JWT токен на основе полезной нагрузки."""
         to_encode = payload.copy()
         now = datetime.now(timezone.utc)
         expire = now + timedelta(minutes=self.settings.access_token_expire_minutes)
@@ -23,7 +25,7 @@ class JWTService:
         return encoded
 
     def decode_jwt(self, token: str):
-        """Декодирование JWT."""
+        """Валидирует и декодирует JWT токен."""
         decoded = jwt.decode(
             jwt=token,
             key=self.settings.secret,

@@ -2,10 +2,20 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.responses import RedirectResponse
 
-from app.dependencies import get_auth_service, revoke_token_for_current_user
-from app.exceptions import UserNotFound, UserIncorrectPassword
+from app.dependencies import (
+    get_auth_service,
+    get_google_auth_service,
+    get_access_token_for_request_user,
+)
+from app.exceptions import (
+    UserNotFound,
+    UserIncorrectPassword,
+    TokenExpired,
+    TokenException,
+)
 from app.schemas import UserLoginSchema
 from app.services import AuthService
+from app.services.google_auth import GoogleAuthService
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -30,11 +40,18 @@ async def login(
 
 @router.post("/token/revoke")
 async def revoke(
-    username: str = Depends(revoke_token_for_current_user),
+    auth_service: AuthService = Depends(get_auth_service),
+    access_token: str = Depends(get_access_token_for_request_user),
 ):
-    return {
-        "message": f"{username} successfully logged out",
-    }
+    try:
+        username = await auth_service.revoke_token(access_token)
+        return {
+            "message": f"{username} successfully logged out",
+        }
+    except TokenExpired as e:
+        raise HTTPException(**e.to_dict)
+    except TokenException as e:
+        raise HTTPException(**e.to_dict)
 
 
 @router.get(
@@ -42,7 +59,7 @@ async def revoke(
     response_class=RedirectResponse,
 )
 async def login_google(
-    service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[GoogleAuthService, Depends(get_google_auth_service)],
 ):
     redirect_url = await service.get_google_redirect_url()
     print(redirect_url)
@@ -51,7 +68,7 @@ async def login_google(
 
 @router.get("/google")
 async def auth_google(
-    service: Annotated[AuthService, Depends(get_auth_service)],
+    service: Annotated[GoogleAuthService, Depends(get_google_auth_service)],
     code: str,
 ):
     return await service.auth_google(code=code)

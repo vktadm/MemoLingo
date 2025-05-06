@@ -72,7 +72,6 @@ class GoogleSettings(BaseModel):
 
 class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
-    # db: SQliteSettings = SQliteSettings()
     db: PostgresSettings = PostgresSettings()
     cache: RedisSettings = RedisSettings()
     auth_jwt: JWTSettings = JWTSettings()
