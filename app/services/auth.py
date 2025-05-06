@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+from fastapi import HTTPException
 from jwt import ExpiredSignatureError, PyJWTError
 
 from app.exceptions import TokenExpired, TokenException
@@ -64,7 +65,7 @@ class AuthService:
         """Генерирует ответ с токеном для аутентифицированного пользователя."""
         access_token = self._create_access_token(user)
         await self._store_token(access_token)
-        return UserLoginSchema(access_token=access_token)
+        return UserLoginSchema(access_token=access_token, id=user.id)
 
     async def _store_token(self, token: str) -> None:
         """Сохраняет токен с указанием времени жизни."""
