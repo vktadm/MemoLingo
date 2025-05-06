@@ -49,7 +49,6 @@ class UsersRepository:
         email: Optional[str] = None,
     ) -> User:
         """Создает User."""
-        # TODO: Обработка ошибок
         user = User(
             username=username,
             password=password,
@@ -65,14 +64,15 @@ class UsersRepository:
         google_access_token: str,
         name: Optional[str] = None,
         email: Optional[str] = None,
+        is_active: bool = True,
     ) -> User:
         """Создает User с google_access_token."""
-        # TODO: Обработка ошибок
         user = User(
             username=username,
             google_access_token=google_access_token,
             name=name,
             email=email,
+            is_active=is_active,
         )
         self.session.add(user)
         await self.session.commit()

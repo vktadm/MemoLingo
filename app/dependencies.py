@@ -20,9 +20,9 @@ async def get_user_repository(
 
 
 async def get_block_list_repository(
-    session: Redis = Depends(cache_db_helper.get_redis_connection),
+    session: Redis = Depends(cache_db_helper.get_redis_session),
 ) -> TokenBlackListRepository:
-    return TokenBlackListRepository(session)
+    return TokenBlackListRepository(session=session, settings=Settings())
 
 
 async def get_google_client() -> GoogleClient:

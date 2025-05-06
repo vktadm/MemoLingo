@@ -10,8 +10,10 @@ from app.services.crypto_manager import CryptoService
 
 @dataclass
 class UserService:
-    user_repository: UsersRepository
-    crypto_service: CryptoService
+    """Сервис для управления пользователями."""
+
+    user_repository: UsersRepository  # Доступ к данным пользователей в БД
+    crypto_service: CryptoService  # Хеширование и проверка паролей
 
     async def create_user(
         self,
@@ -19,6 +21,7 @@ class UserService:
         password: str,
         email: Optional[str] = None,
     ) -> UserSchema:
+        """Создает нового пользователя в системе."""
         hashed_password = self.crypto_service.hash_password(password)
         if await self.user_repository.get_user_by_username(username=username):
             raise UserAlreadyExists
@@ -31,6 +34,7 @@ class UserService:
         return UserSchema(id=user.id, username=user.username, email=user.email)
 
     async def get_users(self) -> list[UserSchema]:
+        """Получает список всех пользователей."""
         data = await self.user_repository.get_users()
         users = [
             UserSchema(
@@ -46,6 +50,7 @@ class UserService:
         return users
 
     async def get_user_by_id(self, user_id: int) -> UserSchema:
+        """Получает пользователя по его идентификатору."""
         data = await self.user_repository.get_user_by_id(user_id=user_id)
         user = UserSchema(
             id=data.id,

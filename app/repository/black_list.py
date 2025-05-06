@@ -1,23 +1,25 @@
+from dataclasses import dataclass
 from redis.asyncio import Redis
 
+from app.settings import Settings
 
+
+@dataclass
 class TokenBlackListRepository:
-    def __init__(self, session: Redis):
-        self.session = session
+    session: Redis
+    settings: Settings
 
-    async def add_token(self, token: str, expiration: int):
-        async with self.session as s:
-            await s.set(token, 0, ex=expiration * 60)
+    async def add_token(self, token: str):
+        expiration = self.settings.auth_jwt.access_token_expire_minutes * 60
+        await self.session.set(token, 0, ex=expiration)
 
     async def block_token(self, token: str):
-        async with self.session as s:
-            ttl = await s.ttl(token)
-            if ttl != -2:
-                await s.setex(token, ttl, 1)
+        ttl = await self.session.ttl(token)
+        if ttl != -2:
+            await self.session.setex(token, ttl, 1)
 
     async def token_is_expired(self, token: str) -> bool:
-        async with self.session as s:
-            is_expired = await s.get(token)
+        is_expired = await self.session.get(token)
         if not is_expired:
             return True
         return bool(int(is_expired.decode("utf-8")))

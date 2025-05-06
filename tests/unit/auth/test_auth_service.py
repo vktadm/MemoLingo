@@ -7,26 +7,7 @@ from app.settings import Settings
 pytestmark = pytest.mark.asyncio
 
 
-def test_google_redirect_url__success(
-    auth_service: AuthService,
-    settings: Settings,
-):
-    settings_google_redirect_url = auth_service.get_google_redirect_url
-
-    auth_service_google_redirect_url = auth_service.get_google_redirect_url
-
-    assert settings_google_redirect_url == auth_service_google_redirect_url
-
-
-def test_google_redirect_url__fail(auth_service: AuthService):
-    settings_google_redirect_url = "https://fake_google_redirect_url.com"
-
-    auth_service_google_redirect_url = auth_service.get_google_redirect_url
-
-    assert settings_google_redirect_url != auth_service_google_redirect_url
-
-
-def test_generate_access_token__success(
+def test_create_access_token__success(
     auth_service: AuthService,
     jwt_service: JWTService,
     settings: Settings,
@@ -34,7 +15,7 @@ def test_generate_access_token__success(
     user_id = 1
     username = "username"
 
-    access_token = auth_service.get_access_token(
+    access_token = auth_service._create_access_token(
         user_id=user_id,
         username=username,
     )

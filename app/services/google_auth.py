@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from app.clients import GoogleClient
 from app.exceptions import UserNoCreate
 from app.repository.black_list import TokenBlackListRepository
-from app.schemas import UserLoginSchema
+from app.schemas import UserLoginSchema, UserSchema, GoogleUserDataSchema
 from app.repository import UsersRepository
 from app.services import JWTService
 
@@ -17,6 +17,7 @@ class GoogleAuthService:
 
     async def auth_google(self, code: str) -> UserLoginSchema:
         """Аутентификация через Google OAuth."""
+        # TODO Ошибки
         user_data = await self.google_client.get_user_info(code)
         user = await self._get_or_create_google_user(user_data)
         return await self._generate_auth_response(user)
@@ -25,33 +26,32 @@ class GoogleAuthService:
         """Получает URL для перенаправления на Google OAuth."""
         return self.google_client.settings.get_url
 
-    async def _generate_auth_response(self, user) -> UserLoginSchema:
+    async def _generate_auth_response(self, user: UserSchema) -> UserLoginSchema:
         """Генерирует ответ с токеном для аутентифицированного пользователя."""
         access_token = self._create_access_token(user)
         await self._store_token(access_token)
         return UserLoginSchema(access_token=access_token)
 
-    async def _get_or_create_google_user(self, user_data):
+    async def _get_or_create_google_user(
+        self, user_data: GoogleUserDataSchema
+    ) -> UserSchema:
         """Получает или создает пользователя для Google auth."""
         user = await self.user_repository.get_user_by_email(user_data.email)
         if user:
-            return user
-
+            return UserSchema.model_validate(user)
         try:
-            return await self.user_repository.create_google_user(
+            new_user = await self.user_repository.create_google_user(
                 **user_data.model_dump()
             )
+            return UserSchema.model_validate(new_user)
         except Exception:
-            raise UserNoCreate()
+            raise UserNoCreate
 
     async def _store_token(self, token: str):
         """Сохраняет токен с указанием времени жизни."""
-        await self.black_list.add_token(
-            token,
-            self.jwt_service.settings.access_token_expire_minutes,
-        )
+        await self.black_list.add_token(token)
 
-    def _create_access_token(self, user) -> str:
+    def _create_access_token(self, user: UserSchema) -> str:
         """Создает JWT токен."""
         jwt_payload = {
             "sub": user.username,

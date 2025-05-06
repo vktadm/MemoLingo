@@ -9,7 +9,7 @@ class GoogleUserDataSchema(BaseModel):
     email: str
     name: Optional[str]
     # google_id: int
-    # verified_email: bool
+    # verified_email: bool # TODO сохранять в БД
 
 
 class UserLoginSchema(BaseModel):
