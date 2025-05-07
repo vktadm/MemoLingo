@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from app.exceptions import UserAlreadyExists, UserNoCreate
-from app.exceptions.base import NoContent
+from app.exceptions import NotFound
 from app.repository import UsersRepository
 from app.schemas import UserSchema
 from app.services.crypto_manager import CryptoService
@@ -46,7 +46,7 @@ class UserService:
             for user in data
         ]
         if not users:
-            raise NoContent
+            raise NotFound
         return users
 
     async def get_user_by_id(self, user_id: int) -> UserSchema:
@@ -59,5 +59,5 @@ class UserService:
             name=data.name,
         )
         if not user:
-            raise NoContent
+            raise NotFound
         return user

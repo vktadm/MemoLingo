@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 from typing import Optional
-
-from fastapi import HTTPException
 from jwt import ExpiredSignatureError, PyJWTError
 
 from app.exceptions import TokenExpired, TokenException

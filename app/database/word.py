@@ -1,14 +1,9 @@
-from typing import List, TYPE_CHECKING, Optional
+from typing import Optional
 from sqlalchemy import String
 
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
-
-
-if TYPE_CHECKING:
-    from .category import Category
-    from .user import User
 
 
 class Word(Base):

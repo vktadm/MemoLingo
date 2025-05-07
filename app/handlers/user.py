@@ -1,11 +1,11 @@
 from typing import Annotated, List, Optional
 from fastapi import APIRouter, Depends, Form, HTTPException
 
-from app.dependencies import get_user_service, get_auth_service, get_request_user_id
+from app.dependencies import get_user_service, get_request_user_id
 from app.exceptions import UserAlreadyExists, UserNoCreate
-from app.exceptions.base import NoContent
-from app.schemas import UserLoginSchema, UserSchema
-from app.services import UserService, AuthService
+from app.exceptions import NotFound
+from app.schemas import UserSchema
+from app.services import UserService
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -18,7 +18,7 @@ async def get_users(
     """Получает всех существующих пользователей."""
     try:
         return await service.get_users()
-    except NoContent as e:
+    except NotFound as e:
         raise HTTPException(**e.to_dict)
 
 

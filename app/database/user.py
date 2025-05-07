@@ -14,7 +14,6 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(32), unique=True)
     password: Mapped[str] = mapped_column(String(120), nullable=True)
     google_access_token: Mapped[Optional[str]] = mapped_column(nullable=True)
-    # TODO: сделать обязательным
     email: Mapped[Optional[str]] = mapped_column(nullable=True, unique=True)
     name: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     is_active: Mapped[bool] = mapped_column(
