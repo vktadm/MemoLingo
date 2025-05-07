@@ -1,9 +1,7 @@
 from typing import Annotated, List, Optional
-from fastapi import APIRouter, Depends, Form, HTTPException
+from fastapi import APIRouter, Depends, Form, status
 
 from app.dependencies import get_user_service, get_request_user_id
-from app.exceptions import UserAlreadyExists, UserNoCreate
-from app.exceptions import NotFound
 from app.schemas import UserSchema
 from app.services import UserService
 
@@ -16,29 +14,24 @@ async def get_users(
 ):
     # TODO: Добавить роль admin
     """Получает всех существующих пользователей."""
-    try:
-        return await service.get_users()
-    except NotFound as e:
-        raise HTTPException(**e.to_dict)
+    return await service.get_users()
 
 
-@router.post("/register", response_model=Optional[UserSchema])
+@router.post(
+    "/register",
+    response_model=Optional[UserSchema],
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_user(
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
     user_service: Annotated[UserService, Depends(get_user_service)],
 ):
     """Регистрация пользователя с login, password."""
-    # Создаем пользователя.
-    try:
-        user = await user_service.create_user(
-            username=username,
-            password=password,
-        )
-    except UserAlreadyExists as e:
-        raise HTTPException(**e.to_dict)
-    except UserNoCreate as e:
-        raise HTTPException(**e.to_dict)
+    user = await user_service.create_user(
+        username=username,
+        password=password,
+    )
     return user
 
 

@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from app.exceptions import UserAlreadyExists, UserNoCreate
-from app.exceptions import NotFound
+from app.exceptions import NotFoundException, UserAlreadyExistsException
 from app.repository import UsersRepository
 from app.schemas import UserSchema
 from app.services.crypto_manager import CryptoService
@@ -24,40 +23,30 @@ class UserService:
         """Создает нового пользователя в системе."""
         hashed_password = self.crypto_service.hash_password(password)
         if await self.user_repository.get_user_by_username(username=username):
-            raise UserAlreadyExists
-        try:
-            user = await self.user_repository.create_user(
-                username=username, password=hashed_password, email=email
-            )
-        except Exception:
-            raise UserNoCreate
-        return UserSchema(id=user.id, username=user.username, email=user.email)
+            raise UserAlreadyExistsException()
+
+        db_user = await self.user_repository.create_user(
+            username=username,
+            password=hashed_password,
+            email=email,
+        )
+
+        return UserSchema.model_validate(db_user)
 
     async def get_users(self) -> list[UserSchema]:
         """Получает список всех пользователей."""
-        data = await self.user_repository.get_users()
-        users = [
-            UserSchema(
-                id=user.id,
-                username=user.username,
-                email=user.email,
-                name=user.name,
-            )
-            for user in data
-        ]
+        db_users = await self.user_repository.get_users()
+        users = [UserSchema.model_validate(itm) for itm in db_users]
         if not users:
-            raise NotFound
+            raise NotFoundException()
+
         return users
 
     async def get_user_by_id(self, user_id: int) -> UserSchema:
         """Получает пользователя по его идентификатору."""
-        data = await self.user_repository.get_user_by_id(user_id=user_id)
-        user = UserSchema(
-            id=data.id,
-            username=data.username,
-            email=data.email,
-            name=data.name,
-        )
+        db_user = await self.user_repository.get_user_by_id(user_id=user_id)
+        user = UserSchema.model_validate(db_user)
         if not user:
-            raise NotFound
+            raise NotFoundException()
+
         return user

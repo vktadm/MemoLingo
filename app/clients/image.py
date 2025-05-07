@@ -1,7 +1,7 @@
 import httpx
 from dataclasses import dataclass
 
-from app.decorators import handle_http_errors
+from app.decorators import handle_client_errors
 from app.settings import ImageAPISettings
 
 
@@ -9,9 +9,9 @@ from app.settings import ImageAPISettings
 class ImageAPIClient:
     settings: ImageAPISettings
 
-    @handle_http_errors
     async def get_image(self, query: str) -> str:
         """Получает image из Unsplash API."""
+        # TODO: Обработка ошибок
         async with httpx.AsyncClient() as client:
             response = await client.get(
                 url=self.settings.URL,
@@ -23,5 +23,4 @@ class ImageAPIClient:
                 },
                 timeout=10.0,
             )
-            response.raise_for_status()
             return response.json()["urls"]["regular"]

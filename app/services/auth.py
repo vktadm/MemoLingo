@@ -1,12 +1,14 @@
 from dataclasses import dataclass
 from typing import Optional
-from jwt import ExpiredSignatureError, PyJWTError
 
-from app.exceptions import TokenExpired, TokenException
 from app.repository.black_list import TokenBlackListRepository
 from app.schemas import UserLoginSchema, UserSchema
 from app.repository import UsersRepository
-from app.exceptions import UserNotFound, UserIncorrectPassword
+from app.exceptions import (
+    NotFoundException,
+    UserIncorrectPasswordException,
+    TokenException,
+)
 from app.services.crypto_manager import CryptoService
 from app.services.jwt_manager import JWTService
 
@@ -20,7 +22,7 @@ class AuthService:
     crypto_service: CryptoService  # Проверка паролей
     black_list: TokenBlackListRepository  # Хранение активных и неактивных токенов
 
-    async def login(self, username: str, password: str) -> UserLoginSchema:
+    async def login(self, username: str, password: str) -> Optional[UserLoginSchema]:
         """Аутентификация пользователя по логину и паролю."""
         user = await self._validate_user_credentials(username, password)
         return await self._generate_auth_response(user)
@@ -28,14 +30,9 @@ class AuthService:
     async def validate_access_token(self, access_token: str) -> dict:
         """Валидирует access token и возвращает payload."""
         if await self.black_list.token_is_expired(access_token):
-            raise TokenException
+            raise TokenException()
 
-        try:
-            return self.jwt_service.decode_jwt(token=access_token)
-        except ExpiredSignatureError:
-            raise TokenExpired
-        except PyJWTError:
-            raise TokenException
+        return self.jwt_service.decode_jwt(token=access_token)
 
     async def revoke_token(self, access_token: str) -> str:
         """Отзывает токен доступа."""
@@ -50,13 +47,13 @@ class AuthService:
         user = await self.user_repository.get_user_by_username(username=username)
 
         if not user or not user.password:
-            raise UserNotFound
+            raise NotFoundException()
 
         if not self.crypto_service.validate_password(
             password=password,
             hashed_password=user.password,
         ):
-            raise UserIncorrectPassword
+            raise UserIncorrectPasswordException()
         return user
 
     async def _generate_auth_response(self, user: UserSchema) -> UserLoginSchema:

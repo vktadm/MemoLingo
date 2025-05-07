@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
 from app.clients import GoogleClient
-from app.exceptions import UserNoCreate
 from app.repository.black_list import TokenBlackListRepository
 from app.schemas import UserLoginSchema, UserSchema, GoogleUserDataSchema
 from app.repository import UsersRepository
@@ -39,13 +38,10 @@ class GoogleAuthService:
         user = await self.user_repository.get_user_by_email(user_data.email)
         if user:
             return UserSchema.model_validate(user)
-        try:
-            new_user = await self.user_repository.create_google_user(
-                **user_data.model_dump()
-            )
-            return UserSchema.model_validate(new_user)
-        except Exception:
-            raise UserNoCreate
+        new_user = await self.user_repository.create_google_user(
+            **user_data.model_dump()
+        )
+        return UserSchema.model_validate(new_user)
 
     async def _store_token(self, token: str):
         """Сохраняет токен с указанием времени жизни."""

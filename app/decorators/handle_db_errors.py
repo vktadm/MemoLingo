@@ -1,11 +1,14 @@
+import logging
 from functools import wraps
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError, DatabaseError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError, NoResultFound
+
 
 from app.exceptions import (
-    NotFound,
-    ContentConflict,
-    ConstraintViolationError,
-    RepositoryError,
+    NotFoundException,
+    ContentConflictException,
+    ConstraintViolationException,
+    RepositoryException,
+    DatabaseException,
 )
 
 
@@ -17,22 +20,21 @@ def handle_db_errors(func):
         operation = func.__name__
         try:
             return await func(*args, **kwargs)
-
-        except NotFound:
-            raise
+        except NoResultFound:
+            raise NotFoundException()
 
         except IntegrityError as e:
             print(f"{e} in {operation}.")
             if "unique constraint" in str(e).lower():
-                raise ConstraintViolationError
-            raise ContentConflict
+                raise ConstraintViolationException()
+            raise ContentConflictException()
 
         except SQLAlchemyError as e:
             print(f"{e} in {operation}.")
-            raise RepositoryError
+            raise RepositoryException()
 
         except Exception as e:
             print(f"{e} in {operation}.")
-            raise DatabaseError
+            raise DatabaseException()
 
     return wrapper

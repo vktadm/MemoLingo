@@ -1,12 +1,9 @@
-from fastapi import Depends, security, Security, HTTPException
+from fastapi import Depends, security, Security
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
-from app.clients.image import ImageAPIClient
 from app.settings import settings
-
-from app.clients import GoogleClient
-from app.exceptions import TokenExpired, TokenException
+from app.clients import GoogleClient, ImageAPIClient
 from app.repository import UsersRepository, TokenBlackListRepository, WordRepository
 from app.services import (
     UserService,
@@ -120,10 +117,5 @@ async def get_request_user_id(
     auth_service: AuthService = Depends(get_auth_service),
     token: str = Depends(get_access_token_for_request_user),
 ) -> int:
-    try:
-        user: dict = await auth_service.validate_access_token(access_token=token)
-    except TokenExpired as e:
-        raise HTTPException(**e.to_dict)
-    except TokenException as e:
-        raise HTTPException(**e.to_dict)
+    user: dict = await auth_service.validate_access_token(access_token=token)
     return user["id"]

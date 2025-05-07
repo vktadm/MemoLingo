@@ -1,34 +1,37 @@
-from app.exceptions.user import (
-    UserNoCreate,
-    UserNotFound,
-    UserIncorrectPassword,
-    UserAlreadyExists,
+from app.exceptions.auth import (
+    TokenException,
+    TokenExpiredException,
+    UserIncorrectPasswordException,
+    UserAlreadyExistsException,
 )
-from app.exceptions.auth import TokenException, TokenExpired
 from app.exceptions.db import (
-    NotFound,
-    ContentConflict,
-    ConstraintViolationError,
-    RepositoryError,
+    NotFoundException,
+    ContentConflictException,
+    ConstraintViolationException,
+    RepositoryException,
+    DatabaseException,
 )
-from app.exceptions.http import ExternalServiceError, TimeoutError, RequestError
+from app.exceptions.client import (
+    ExternalServiceException,
+    TimeoutException,
+    RequestException,
+)
 
 __all__ = [
     # User
-    "UserNotFound",
-    "UserAlreadyExists",
-    "UserIncorrectPassword",
-    "UserNoCreate",
+    "UserAlreadyExistsException",
+    "UserIncorrectPasswordException",
     # Auth
-    "TokenExpired",
+    "TokenExpiredException",
     "TokenException",
     # DB
-    "NotFound",
-    "ContentConflict",
-    "ConstraintViolationError",
-    "RepositoryError",
+    "NotFoundException",
+    "ContentConflictException",
+    "ConstraintViolationException",
+    "RepositoryException",
+    "DatabaseException",
     # Clients
-    "ExternalServiceError",
-    "TimeoutError",
-    "RequestError",
+    "ExternalServiceException",
+    "TimeoutException",
+    "RequestException",
 ]

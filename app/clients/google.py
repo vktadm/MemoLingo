@@ -2,7 +2,7 @@ import httpx
 import time
 from dataclasses import dataclass
 
-from app.decorators import handle_http_errors
+from app.decorators import handle_client_errors
 from app.schemas.auth import GoogleUserDataSchema
 from app.settings import Settings
 
@@ -11,7 +11,7 @@ from app.settings import Settings
 class GoogleClient:
     settings: Settings().auth_google
 
-    @handle_http_errors
+    @handle_client_errors
     async def get_user_info(self, code: str) -> GoogleUserDataSchema:
         """Получает data из Google."""
         access_token = await self._get_user_access_token(code)
@@ -30,7 +30,7 @@ class GoogleClient:
             username=self._generate_random_username(),
         )
 
-    @handle_http_errors
+    @handle_client_errors
     async def _get_user_access_token(self, code) -> str:
         """Получает токен доступа."""
         data = {

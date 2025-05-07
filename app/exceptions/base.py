@@ -1,10 +1,6 @@
-class MainException(Exception):
-    detail: str = "Server error!"
-    status_code: int = 500
+from fastapi import HTTPException
 
-    @property
-    def to_dict(self):
-        return {
-            "detail": self.detail,
-            "status_code": self.status_code,
-        }
+
+class APIException(HTTPException):
+    def __init__(self, status_code: int, detail: str):
+        super().__init__(status_code=status_code, detail=detail)

@@ -1,17 +1,12 @@
-from typing import Annotated
-from fastapi import APIRouter, Depends, Form, HTTPException
-from fastapi.responses import RedirectResponse
+from typing import Annotated, Optional
+from fastapi import APIRouter, Depends, Form
+from fastapi.responses import RedirectResponse, JSONResponse
+
 
 from app.dependencies import (
     get_auth_service,
     get_google_auth_service,
     get_access_token_for_request_user,
-)
-from app.exceptions import (
-    UserNotFound,
-    UserIncorrectPassword,
-    TokenExpired,
-    TokenException,
 )
 from app.schemas import UserLoginSchema
 from app.services import AuthService
@@ -25,33 +20,20 @@ async def login(
     username: Annotated[str, Form()],
     password: Annotated[str, Form()],
     service: Annotated[AuthService, Depends(get_auth_service)],
-):
+) -> Optional[UserLoginSchema]:
     """Авторизация c login и password."""
-    try:
-        user: UserLoginSchema = await service.login(
-            username=username, password=password
-        )
-    except UserNotFound as e:
-        raise HTTPException(**e.to_dict)
-    except UserIncorrectPassword as e:
-        raise HTTPException(**e.to_dict)
-    return user
+    return await service.login(username=username, password=password)
 
 
-@router.post("/token/revoke")
+@router.post("/token/revoke", response_class=JSONResponse)
 async def revoke(
     auth_service: AuthService = Depends(get_auth_service),
     access_token: str = Depends(get_access_token_for_request_user),
 ):
-    try:
-        username = await auth_service.revoke_token(access_token)
-        return {
-            "message": f"{username} successfully logged out",
-        }
-    except TokenExpired as e:
-        raise HTTPException(**e.to_dict)
-    except TokenException as e:
-        raise HTTPException(**e.to_dict)
+    username = await auth_service.revoke_token(access_token)
+    return {
+        "message": f"{username} successfully logged out",
+    }
 
 
 @router.get(

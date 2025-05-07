@@ -4,6 +4,7 @@ from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import User
+from app.decorators import handle_db_errors
 
 
 @dataclass
@@ -12,6 +13,7 @@ class UsersRepository:
 
     session: AsyncSession
 
+    @handle_db_errors
     async def get_users(self) -> List[User]:
         """Получает всех существующих пользователей."""
         stmt = select(User).order_by(User.id)
@@ -19,6 +21,7 @@ class UsersRepository:
         words = result.scalars().all()
         return list(words)
 
+    @handle_db_errors
     async def get_user_by_id(
         self,
         user_id: int,
@@ -26,6 +29,7 @@ class UsersRepository:
         """Получает User по user_id или username."""
         return await self.session.get(User, user_id)
 
+    @handle_db_errors
     async def get_user_by_username(
         self,
         username: str,
@@ -34,6 +38,7 @@ class UsersRepository:
         stmt = select(User).where(User.username == username)
         return await self.session.scalar(stmt)
 
+    @handle_db_errors
     async def get_user_by_email(
         self,
         email: str,
@@ -42,6 +47,7 @@ class UsersRepository:
         stmt = select(User).where(User.email == email)
         return await self.session.scalar(stmt)
 
+    @handle_db_errors
     async def create_user(
         self,
         username: str,
@@ -58,6 +64,7 @@ class UsersRepository:
         await self.session.commit()
         return user
 
+    @handle_db_errors
     async def create_google_user(
         self,
         username: str,

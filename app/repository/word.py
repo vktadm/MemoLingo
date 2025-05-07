@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from typing import Optional, List
 from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import NoResultFound
 
 
 from app.database import Word
-from app.exceptions import NotFound
 from app.decorators import handle_db_errors
 from app.schemas.word import CreateWordSchema, UpdateWordSchema
 
@@ -69,7 +69,7 @@ class WordRepository:
         """Обновляет существующее слово."""
         word_db = await self.get_word_by_id(word_id)
         if not word_db:
-            raise NotFound
+            raise NoResultFound()
 
         update_data = update_word.model_dump()
         for key, value in update_data.items():
@@ -85,7 +85,7 @@ class WordRepository:
         """Удаляет слово из базы данных."""
         word = await self.get_word_by_id(word_id)
         if not word:
-            raise NotFound
+            raise NoResultFound()
 
         await self.session.delete(word)
         await self.session.commit()

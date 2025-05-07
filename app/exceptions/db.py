@@ -1,26 +1,41 @@
-from app.exceptions.base import MainException
+from app.exceptions.base import APIException
 
 
-class NotFound(MainException):
-    detail = "There are no records yet."
-    status_code = 404
+class NotFoundException(APIException):
+    def __init__(self):
+        super().__init__(
+            status_code=404,
+            detail="There are no records yet.",
+        )
 
 
-class ContentConflict(MainException):
-    detail = "Data integrity violation."
-    status_code = 409
+class ContentConflictException(APIException):
+    def __init__(self):
+        super().__init__(
+            status_code=409,
+            detail="Data integrity violation.",
+        )
 
 
-class ConstraintViolationError(MainException):
-    detail = "Content already exists."
-    status_code = 400
+class ConstraintViolationException(APIException):
+    def __init__(self):
+        super().__init__(
+            status_code=400,
+            detail="Content already exists.",
+        )
 
 
-class RepositoryError(MainException):
-    detail = "Database operation failed."
-    status_code = 500
+class RepositoryException(APIException):
+    def __init__(self):
+        super().__init__(
+            status_code=500,
+            detail="Database operation failed.",
+        )
 
 
-class DatabaseError(MainException):
-    detail = "Unexpected error during."
-    status_code = 500
+class DatabaseException(APIException):
+    def __init__(self):
+        super().__init__(
+            status_code=500,
+            detail="Unexpected error during.",
+        )

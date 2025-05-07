@@ -2,6 +2,7 @@ import jwt
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 
+from app.decorators import handle_jwt_manager_errors
 from app.settings import JWTSettings
 
 
@@ -24,6 +25,7 @@ class JWTService:
         )
         return encoded
 
+    @handle_jwt_manager_errors
     def decode_jwt(self, token: str):
         """Валидирует и декодирует JWT токен."""
         decoded = jwt.decode(
