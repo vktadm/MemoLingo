@@ -70,6 +70,11 @@ class GoogleSettings(BaseModel):
         return f"{base_url}?{urlencode(params)}"
 
 
+class ImageAPISettings(BaseModel):
+    ACCESS_KEY: str = env("UNSPLASH_ACCESS_KEY")
+    URL: str = "https://api.unsplash.com/photos/random"
+
+
 class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
     db: PostgresSettings = PostgresSettings()
