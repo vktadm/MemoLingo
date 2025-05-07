@@ -1,11 +1,25 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
-class WordSchema(BaseModel):
-    id: int
+class BaseWordSchema(BaseModel):
     wrd: str
     translation: str
+    transcription: Optional[str]
+    description: Optional[str]
+    img: Optional[str]
 
-    # transcription: str | None
-    # description: str | None
-    # img: str | None
+
+class CreateWordSchema(BaseWordSchema):
+    transcription: Optional[str] = None
+    description: Optional[str] = None
+    img: Optional[str] = None
+
+
+class UpdateWordSchema(CreateWordSchema):
+    wrd: Optional[str] = None
+    translation: Optional[str] = None
+
+
+class WordSchema(BaseWordSchema):
+    id: int
