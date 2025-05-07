@@ -118,4 +118,5 @@ async def get_request_user_id(
     token: str = Depends(get_access_token_for_request_user),
 ) -> int:
     user: dict = await auth_service.validate_access_token(access_token=token)
+    print(user)
     return user["id"]

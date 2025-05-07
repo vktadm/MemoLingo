@@ -8,10 +8,10 @@ from app.exceptions import TokenException, TokenExpiredException
 def handle_jwt_manager_errors(func):
 
     @wraps(func)
-    async def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs):
         operation = func.__name__
         try:
-            return await func(*args, **kwargs)
+            return func(*args, **kwargs)
         except ExpiredSignatureError as e:
             print(f"{e} in {operation}.")
             raise TokenExpiredException()

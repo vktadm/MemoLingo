@@ -1,13 +1,10 @@
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import expression
 
 from .base import Base
-
-if TYPE_CHECKING:
-    from .word import Word
 
 
 class User(Base):
