@@ -14,6 +14,7 @@ from app.services import (
     AuthService,
     JWTService,
     GoogleAuthService,
+    WordService,
 )
 
 from app.database import db_helper
@@ -44,7 +45,7 @@ async def get_google_client() -> GoogleClient:
     return GoogleClient(settings=settings.auth_google)
 
 
-async def get_image_api_client() -> ImageAPIClient:
+async def get_image_client() -> ImageAPIClient:
     return ImageAPIClient(settings=settings.image)
 
 
@@ -68,6 +69,16 @@ async def get_auth_service(
         jwt_service=jwt_service,
         crypto_service=crypto_service,
         black_list=block_list,
+    )
+
+
+async def get_word_service(
+    word_repository: WordRepository = Depends(get_word_repository),
+    image_client: ImageAPIClient = Depends(get_image_client),
+) -> WordService:
+    return WordService(
+        word_repository=word_repository,
+        image_client=image_client,
     )
 
 

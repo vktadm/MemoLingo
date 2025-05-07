@@ -11,4 +11,5 @@ class UserSchema(BaseModel):
     password: Optional[str] = None
     google_access_token: Optional[str] = None
     is_active: bool = False
+
     model_config = ConfigDict(from_attributes=True)

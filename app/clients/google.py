@@ -2,6 +2,7 @@ import httpx
 import time
 from dataclasses import dataclass
 
+from app.decorators import handle_http_errors
 from app.schemas.auth import GoogleUserDataSchema
 from app.settings import Settings
 
@@ -10,22 +11,26 @@ from app.settings import Settings
 class GoogleClient:
     settings: Settings().auth_google
 
+    @handle_http_errors
     async def get_user_info(self, code: str) -> GoogleUserDataSchema:
         """Получает data из Google."""
         access_token = await self._get_user_access_token(code)
         async with httpx.AsyncClient(verify=False) as client:
-            user_info = await client.get(
+            response = await client.get(
                 "https://www.googleapis.com/oauth2/v1/userinfo",
                 headers={
                     "Authorization": f"Bearer {access_token}",
                 },
+                timeout=10.0,
             )
+        response.raise_for_status()
         return GoogleUserDataSchema(
-            **user_info.json(),
+            **response.json(),
             google_access_token=access_token,
             username=self._generate_random_username(),
         )
 
+    @handle_http_errors
     async def _get_user_access_token(self, code) -> str:
         """Получает токен доступа."""
         data = {
@@ -44,7 +49,9 @@ class GoogleClient:
                 self.settings.TOKEN_URI,
                 data=data,
                 headers=headers,
+                timeout=10.0,
             )
+        response.raise_for_status()
         return response.json()["access_token"]
 
     @staticmethod

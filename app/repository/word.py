@@ -48,9 +48,14 @@ class WordRepository:
         return await self.session.get(Word, word_id)
 
     @handle_db_errors
-    async def create_word(self, new_word: CreateWordSchema) -> Word:
+    async def create_word(
+        self,
+        new_word: CreateWordSchema,
+        img: str = None,
+    ) -> Word:
         """Создает новое слово в базе данных."""
-        self.session.add(new_word)
+        word = Word(**new_word.model_dump(), img=img)
+        self.session.add(word)
         await self.session.commit()
 
         return await self.get_word(new_word.wrd)
