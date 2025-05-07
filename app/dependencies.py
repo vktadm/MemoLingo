@@ -2,35 +2,55 @@ from fastapi import Depends, security, Security, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
+from app.clients.image import ImageAPIClient
+from app.settings import settings
+
 from app.clients import GoogleClient
 from app.exceptions import TokenExpired, TokenException
-from app.repository import UsersRepository
-from app.repository.black_list import TokenBlackListRepository
-from app.services import UserService, CryptoService, AuthService, JWTService
-from app.services.google_auth import GoogleAuthService
-from app.settings import Settings
+from app.repository import UsersRepository, TokenBlackListRepository, WordRepository
+from app.services import (
+    UserService,
+    CryptoService,
+    AuthService,
+    JWTService,
+    GoogleAuthService,
+)
+
 from app.database import db_helper
 from app.cache import db_helper as cache_db_helper
 
 
+# ---------- REPOSITORIES ---------- #
 async def get_user_repository(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> UsersRepository:
     return UsersRepository(session=session)
 
 
+async def get_word_repository(
+    session: AsyncSession = Depends(db_helper.session_dependency),
+) -> WordRepository:
+    return WordRepository(session=session)
+
+
 async def get_block_list_repository(
     session: Redis = Depends(cache_db_helper.get_redis_session),
 ) -> TokenBlackListRepository:
-    return TokenBlackListRepository(session=session, settings=Settings())
+    return TokenBlackListRepository(session=session, settings=settings)
 
 
+# ---------- CLIENTS ---------- #
 async def get_google_client() -> GoogleClient:
-    return GoogleClient(settings=Settings().auth_google)
+    return GoogleClient(settings=settings.auth_google)
 
 
+async def get_image_api_client() -> ImageAPIClient:
+    return ImageAPIClient(settings=settings.image)
+
+
+# ---------- SERVICES ---------- #
 async def get_jwt_service() -> JWTService:
-    return JWTService(settings=Settings().auth_jwt)
+    return JWTService(settings=settings.auth_jwt)
 
 
 async def get_crypto_service() -> CryptoService:
@@ -75,6 +95,7 @@ async def get_user_service(
     )
 
 
+# ---------- SECURITY ---------- #
 reusable_oauth2 = security.HTTPBearer()
 
 

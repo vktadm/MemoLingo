@@ -81,6 +81,7 @@ class Settings(BaseSettings):
     cache: RedisSettings = RedisSettings()
     auth_jwt: JWTSettings = JWTSettings()
     auth_google: GoogleSettings = GoogleSettings()
+    image: ImageAPISettings = ImageAPISettings()
 
 
 settings = Settings()

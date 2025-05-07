@@ -5,7 +5,12 @@ from app.exceptions.user import (
     UserAlreadyExists,
 )
 from app.exceptions.auth import TokenException, TokenExpired
-from app.exceptions.general import NotFound
+from app.exceptions.general import (
+    NotFound,
+    ContentConflict,
+    ConstraintViolationError,
+    RepositoryError,
+)
 
 __all__ = [
     "UserNotFound",
@@ -15,4 +20,7 @@ __all__ = [
     "TokenExpired",
     "TokenException",
     "NotFound",
+    "ContentConflict",
+    "ConstraintViolationError",
+    "RepositoryError",
 ]
