@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from app.schemas import CreateUserWordSchema
-from app.database import Word, UserWord
+from app.database import Category, UserWord
 
 
 async def get_new_user_words(
@@ -12,7 +12,7 @@ async def get_new_user_words(
     user_id: int,
     quantity_words: int,
     category: str = None,
-) -> list[Word] | None:
+) -> list[Category] | None:
     """
     Получает {quantity_words} слов, которых нет в UserProgress.
 
@@ -24,9 +24,11 @@ async def get_new_user_words(
     для ежедневного изучения.
     """
     stmt = (
-        select(Word)
+        select(Category)
         .where(
-            Word.id.notin_(select(UserWord.word_id).where(UserWord.user_id == user_id))
+            Category.id.notin_(
+                select(UserWord.word_id).where(UserWord.user_id == user_id)
+            )
         )
         .limit(quantity_words)
     )

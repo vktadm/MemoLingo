@@ -3,20 +3,20 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from app.database import Word, UserWord, Status
+from app.database import Category, UserWord, Status
 
 
 async def get_user_words(
     session: AsyncSession,
     user_id: int,
     category: str = None,
-) -> list[Word] | None:
+) -> list[Category] | None:
     """
     Получает все слова, которых с UserProgress.status == NotStudy.
     TODO category - категория, из которой берем слова для повторения.
     """
-    stmt = select(Word).where(
-        Word.id.in_(
+    stmt = select(Category).where(
+        Category.id.in_(
             select(UserWord.word_id).where(
                 UserWord.user_id == user_id,
                 UserWord.status == Status.revise,
@@ -34,7 +34,12 @@ async def get_random_words(
     word_id: int,
 ) -> list[str]:
 
-    stmt = select(Word.wrd).where(Word.id != word_id).order_by(func.random()).limit(3)
+    stmt = (
+        select(Category.wrd)
+        .where(Category.id != word_id)
+        .order_by(func.random())
+        .limit(3)
+    )
     result: Result = await session.execute(stmt)
     words = result.scalars().all()
 

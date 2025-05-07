@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
 from app.settings import settings
-from app.clients import GoogleClient, ImageAPIClient
+from app.clients import GoogleClient, ImageAPIClient, IconAPIClient
 from app.repository import UsersRepository, TokenBlackListRepository, WordRepository
 from app.services import (
     UserService,
@@ -44,6 +44,10 @@ async def get_google_client() -> GoogleClient:
 
 async def get_image_client() -> ImageAPIClient:
     return ImageAPIClient(settings=settings.image)
+
+
+async def get_icon_client() -> IconAPIClient:
+    return IconAPIClient()
 
 
 # ---------- SERVICES ---------- #
@@ -118,5 +122,4 @@ async def get_request_user_id(
     token: str = Depends(get_access_token_for_request_user),
 ) -> int:
     user: dict = await auth_service.validate_access_token(access_token=token)
-    print(user)
     return user["id"]

@@ -2,19 +2,20 @@ __all__ = {
     "Base",
     "DatabaseHelper",
     "db_helper",
-    "Word",
     "Category",
     "User",
     "Status",
     "CategoryWord",
     "UserWord",
+    "Word",
 }
 
-from .base import Base
-from .db_helper import db_helper, DatabaseHelper
-from .word import Word
-from .category import Category
-from .user import User
-from .status import Status
-from .category_word import CategoryWord
-from .user_word import UserWord
+from app.database.base import Base
+from app.database.db_helper import db_helper, DatabaseHelper
+from app.database.category import Category
+from app.database.user import User
+from app.database.status import Status
+from app.database.category_word import CategoryWord
+from app.database.user_word import UserWord
+from app.database.word import Word
+from app.database.user_category import UserCategory

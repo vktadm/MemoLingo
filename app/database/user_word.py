@@ -26,7 +26,9 @@ class UserWord(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("user.id", ondelete="CASCADE"),
     )
-    word_id: Mapped[int] = mapped_column(ForeignKey("word.id", ondelete="CASCADE"))
+    word_id: Mapped[int] = mapped_column(
+        ForeignKey("word.id", ondelete="CASCADE"),
+    )
 
     def __str__(self):
         return f"{self.__class__.__name__} (id={self.id}) (user: {self.user_id}, word: {self.word_id!r})"

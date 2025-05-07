@@ -4,10 +4,9 @@ from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import NoResultFound
 
-
-from app.database import Word
+from app.database import Category
 from app.decorators import handle_db_errors
-from app.schemas.word import CreateWordSchema, UpdateWordSchema
+from app.schemas import CreateCategorySchema, UpdateCategorySchema
 
 
 @dataclass
@@ -21,73 +20,73 @@ class CategoryRepository:
     session: AsyncSession  # Асинхронная сессия для работы с БД
 
     @handle_db_errors
-    async def get_words(self) -> Optional[List[Word]]:
-        """Получает все существующие слова из базы данных."""
-        stmt = select(Word).order_by(Word.wrd)
+    async def get_categories(self) -> Optional[List[Category]]:
+        """Получает все существующие категории из базы данных."""
+        stmt = select(Category).order_by(Category.title)
         result: Result = await self.session.execute(stmt)
-        words = result.scalars().all()
+        categories = result.scalars().all()
 
-        return list(words)
+        return list(categories)
 
     @handle_db_errors
-    async def get_word(
+    async def get_category(
         self,
-        wrd: str,
-    ) -> Optional[Word]:
-        """Получает слово по его значению."""
-        stmt = select(Word).where(Word.wrd == wrd)
+        title: str,
+    ) -> Optional[Category]:
+        """Получает каткгорию по ее значению."""
+        stmt = select(Category).where(Category.title == title)
 
         return await self.session.scalar(stmt)
 
     @handle_db_errors
-    async def get_word_by_id(
+    async def get_category_by_id(
         self,
-        word_id: int,
-    ) -> Optional[Word]:
-        """Получает слово по его идентификатору."""
-        return await self.session.get(Word, word_id)
+        category_id: int,
+    ) -> Optional[Category]:
+        """Получает категорию по ее идентификатору."""
+        return await self.session.get(Category, category_id)
 
     @handle_db_errors
-    async def create_word(
+    async def create_category(
         self,
-        new_word: CreateWordSchema,
-        img: str = None,
-    ) -> Word:
-        """Создает новое слово в базе данных."""
-        word = Word(**new_word.model_dump(), img=img)
-        self.session.add(word)
+        new_category: CreateCategorySchema,
+        icon: str = None,
+    ) -> Category:
+        """Создает новую категорию в базе данных."""
+        category = Category(**new_category.model_dump(), icon=icon)
+        self.session.add(category)
         await self.session.commit()
 
-        return await self.get_word(new_word.wrd)
+        return await self.get_category(new_category.title)
 
     @handle_db_errors
-    async def update_word(
+    async def update_category(
         self,
-        word_id: int,
-        update_word: UpdateWordSchema,
-    ) -> Word:
-        """Обновляет существующее слово."""
-        word_db = await self.get_word_by_id(word_id)
-        if not word_db:
+        category_id: int,
+        update_category: UpdateCategorySchema,
+    ) -> Category:
+        """Обновляет существующую категорию."""
+        category_db = await self.get_category_by_id(category_id)
+        if not category_db:
             raise NoResultFound()
 
-        update_data = update_word.model_dump()
+        update_data = update_category.model_dump()
         for key, value in update_data.items():
-            setattr(word_db, key, value)
+            setattr(category_db, key, value)
 
         await self.session.commit()
-        await self.session.refresh(word_db)
+        await self.session.refresh(category_db)
 
-        return word_db
+        return category_db
 
     @handle_db_errors
-    async def delete_word(self, word_id: int) -> bool:
-        """Удаляет слово из базы данных."""
-        word = await self.get_word_by_id(word_id)
-        if not word:
+    async def delete_category(self, category_id: int) -> bool:
+        """Удаляет категорию из базы данных."""
+        category = await self.get_category_by_id(category_id)
+        if not category:
             raise NoResultFound()
 
-        await self.session.delete(word)
+        await self.session.delete(category)
         await self.session.commit()
 
         return True

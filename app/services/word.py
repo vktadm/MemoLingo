@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from app.clients.image import ImageAPIClient
+from app.clients import ImageAPIClient
 from app.exceptions import ConstraintViolationException
 from app.repository import WordRepository
 from app.schemas import WordSchema, CreateWordSchema, UpdateWordSchema
