@@ -8,6 +8,7 @@ __all__ = {
     "CategoryWord",
     "UserWord",
     "Word",
+    "UserCategory",
 }
 
 from app.database.base import Base

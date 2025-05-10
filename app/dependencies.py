@@ -74,11 +74,11 @@ async def get_auth_service(
 
 
 async def get_word_service(
-    word_repository: WordRepository = Depends(get_word_repository),
+    repository: WordRepository = Depends(get_word_repository),
     image_client: ImageAPIClient = Depends(get_image_client),
 ) -> WordService:
     return WordService(
-        word_repository=word_repository,
+        repository=repository,
         image_client=image_client,
     )
 

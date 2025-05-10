@@ -4,6 +4,12 @@ from .user_word import UserWordSchema, CreateUserWordSchema
 from .word import WordSchema, CreateWordSchema, UpdateWordSchema
 from .category import CategorySchema, CreateCategorySchema, UpdateCategorySchema
 
+from .user_category import (
+    UserCategorySchema,
+    CreateUserCategorySchema,
+    UpdateUserCategorySchema,
+)
+
 __all__ = {
     # Word
     "WordSchema",
@@ -21,4 +27,8 @@ __all__ = {
     "CategorySchema",
     "CreateCategorySchema",
     "UpdateCategorySchema",
+    # UserCategory
+    "UserCategorySchema",
+    "CreateUserCategorySchema",
+    "UpdateUserCategorySchema",
 }
