@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from app.clients import IconAPIClient
-from app.exceptions import ConstraintViolationException
+from app.exceptions import ConstraintViolationException, NotFoundException
 from app.repository import CategoryRepository
 from app.schemas import CategorySchema, CreateCategorySchema, UpdateCategorySchema
 
@@ -10,16 +10,33 @@ from app.schemas import CategorySchema, CreateCategorySchema, UpdateCategorySche
 @dataclass
 class CategoryService:
 
-    category_repository: CategoryRepository  # Доступ к данным категорий в БД
+    repository: CategoryRepository
     icon_client: IconAPIClient
 
-    async def create_category(
-        self, new_category: CreateCategorySchema
-    ) -> CategorySchema:
-        if await self.category_repository.get_category(title=new_category.title):
+    async def create(self, new_data: CreateCategorySchema) -> CategorySchema:
+        if await self.repository.get_by_title(new_data.title):
             raise ConstraintViolationException()
-        img = await self.icon_client.get_image(new_category.title)
-        category = await self.category_repository.create_category(new_category, img)
-        # TODO: Ошибки при преобразовании Category -> CategorySchema
+        data = await self.repository.create(new_data)
 
-        return CategorySchema.model_validate(category)
+        return CategorySchema.model_validate(data)
+
+    async def get_all(self) -> List[CategorySchema]:
+        data = await self.repository.get_all()
+        if not data:
+            raise NotFoundException()
+        return [CategorySchema.model_validate(item) for item in data]
+
+    async def get_by_id(self, id: int) -> CategorySchema:
+        data = await self.repository.get_by_id(id)
+        if not data:
+            raise NotFoundException()
+
+        return CategorySchema.model_validate(data)
+
+    async def update(self, update_data: UpdateCategorySchema) -> CategorySchema:
+        data = await self.repository.update(update_data)
+
+        return CategorySchema.model_validate(data)
+
+    async def delite(self, id: int):
+        return await self.repository.delete(id)

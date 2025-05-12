@@ -20,6 +20,8 @@ class ${name}Service:
 
     async def get_all(self) -> List[${name}Schema]:
         data = await self.repository.get_all()
+        if not data:
+            raise NotFoundException()
 
         return [${name}Schema.model_validate(item) for item in data]
 

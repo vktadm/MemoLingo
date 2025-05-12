@@ -4,7 +4,13 @@ from redis.asyncio import Redis
 
 from app.settings import settings
 from app.clients import GoogleClient, ImageAPIClient, IconAPIClient
-from app.repository import UsersRepository, TokenBlackListRepository, WordRepository
+from app.repository import (
+    UsersRepository,
+    TokenBlackListRepository,
+    WordRepository,
+    CategoryRepository,
+    CategoryWordRepository,
+)
 from app.services import (
     UserService,
     CryptoService,
@@ -12,6 +18,8 @@ from app.services import (
     JWTService,
     GoogleAuthService,
     WordService,
+    CategoryService,
+    CategoryWordService,
 )
 
 from app.database import db_helper
@@ -29,6 +37,18 @@ async def get_word_repository(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ) -> WordRepository:
     return WordRepository(session=session)
+
+
+async def get_category_repository(
+    session: AsyncSession = Depends(db_helper.session_dependency),
+) -> CategoryRepository:
+    return CategoryRepository(session=session)
+
+
+async def get_category_word_repository(
+    session: AsyncSession = Depends(db_helper.session_dependency),
+) -> CategoryWordRepository:
+    return CategoryWordRepository(session=session)
 
 
 async def get_block_list_repository(
@@ -81,6 +101,22 @@ async def get_word_service(
         repository=repository,
         image_client=image_client,
     )
+
+
+async def get_category_service(
+    repository: CategoryRepository = Depends(get_category_repository),
+    icon_client: IconAPIClient = Depends(get_icon_client),
+) -> CategoryService:
+    return CategoryService(
+        repository=repository,
+        icon_client=icon_client,
+    )
+
+
+def get_category_word_service(
+    repository: CategoryWordRepository = Depends(get_category_word_repository),
+) -> CategoryWordService:
+    return CategoryWordService(repository=repository)
 
 
 async def get_google_auth_service(

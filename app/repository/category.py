@@ -20,16 +20,20 @@ class CategoryRepository:
     session: AsyncSession  # Асинхронная сессия для работы с БД
 
     @handle_db_errors
-    async def get_categories(self) -> Optional[List[Category]]:
+    async def get_all(self) -> Optional[List[Category]]:
         """Получает все существующие категории из базы данных."""
-        stmt = select(Category).order_by(Category.title)
+        stmt = select(Category)
         result: Result = await self.session.execute(stmt)
-        categories = result.scalars().all()
 
-        return list(categories)
+        return list(result.scalars().all())
 
     @handle_db_errors
-    async def get_category(
+    async def get_by_id(self, id: int) -> Optional[Category]:
+        """Получает категорию по ее идентификатору."""
+        return await self.session.get(Category, id)
+
+    @handle_db_errors
+    async def get_by_title(
         self,
         title: str,
     ) -> Optional[Category]:
@@ -39,54 +43,39 @@ class CategoryRepository:
         return await self.session.scalar(stmt)
 
     @handle_db_errors
-    async def get_category_by_id(
-        self,
-        category_id: int,
-    ) -> Optional[Category]:
-        """Получает категорию по ее идентификатору."""
-        return await self.session.get(Category, category_id)
-
-    @handle_db_errors
-    async def create_category(
-        self,
-        new_category: CreateCategorySchema,
-        icon: str = None,
-    ) -> Category:
+    async def create(self, new_data: CreateCategorySchema) -> Category:
         """Создает новую категорию в базе данных."""
-        category = Category(**new_category.model_dump(), icon=icon)
-        self.session.add(category)
+        data = Category(**new_data.model_dump())
+        self.session.add(data)
         await self.session.commit()
+        await self.session.flush()
 
-        return await self.get_category(new_category.title)
+        return data
 
     @handle_db_errors
-    async def update_category(
+    async def update(
         self,
-        category_id: int,
-        update_category: UpdateCategorySchema,
+        update_data: UpdateCategorySchema,
     ) -> Category:
         """Обновляет существующую категорию."""
-        category_db = await self.get_category_by_id(category_id)
-        if not category_db:
+        data = await self.get_by_id(update_data.id)
+        if not data:
             raise NoResultFound()
 
-        update_data = update_category.model_dump()
-        for key, value in update_data.items():
-            setattr(category_db, key, value)
+        for key, value in update_data.model_dump().items():
+            setattr(data, key, value)
 
         await self.session.commit()
-        await self.session.refresh(category_db)
+        await self.session.refresh(data)
 
-        return category_db
+        return data
 
     @handle_db_errors
-    async def delete_category(self, category_id: int) -> bool:
+    async def delete(self, id: int):
         """Удаляет категорию из базы данных."""
-        category = await self.get_category_by_id(category_id)
-        if not category:
+        data = await self.get_by_id(id)
+        if not data:
             raise NoResultFound()
 
-        await self.session.delete(category)
+        await self.session.delete(data)
         await self.session.commit()
-
-        return True

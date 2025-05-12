@@ -3,7 +3,7 @@ from mako.template import Template
 
 from template_engine.name_converter import converter
 from template_engine.settings import GeneratorSettings, settings
-from app.database import UserCategory, Word, User, UserWord
+from app.database import UserCategory, Word, User, UserWord, Category
 from template_engine.mako_model import MakoModel
 
 
@@ -42,4 +42,4 @@ class Generator:
 
 
 if __name__ == "__main__":
-    generator = Generator(User)
+    generator = Generator(Category)

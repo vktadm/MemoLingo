@@ -6,19 +6,21 @@ class BaseCategorySchema(BaseModel):
     title: str
     translation: Optional[str]
     description: Optional[str]
-
-    model_config = ConfigDict(from_attributes=True)
+    icon: Optional[str]
 
 
 class CreateCategorySchema(BaseCategorySchema):
+    title: str
+    translation: Optional[str] = None
     description: Optional[str] = None
+    icon: Optional[str] = None
 
 
 class UpdateCategorySchema(CreateCategorySchema):
-    title: str = None
-    translation: Optional[str] = None
+    title: Optional[str] = None
+    id: Optional[int] = None
 
 
 class CategorySchema(BaseCategorySchema):
+    model_config = ConfigDict(from_attributes=True)
     id: int
-    icon: Optional[str]
