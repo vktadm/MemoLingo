@@ -12,6 +12,7 @@ class Generator:
         ("schema", "schemas"),
         ("repository", "repository"),
         ("service", "services"),
+        ("handler", "handlers"),
     ]
 
     def __init__(self, model: DB_Model):

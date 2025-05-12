@@ -51,10 +51,9 @@ class ${name}Repository:
     @handle_db_errors
     async def update(
         self,
-        id: int,
         update_data: Update${name}Schema,
     ) -> ${name}:
-        data = await self.get_by_id(id)
+        data = await self.get_by_id(update_data.id)
         if not data:
             raise NoResultFound()
 
@@ -67,12 +66,10 @@ class ${name}Repository:
         return data
 
     @handle_db_errors
-    async def delete(self, id: int) -> bool:
+    async def delete(self, id: int):
         data = await self.get_by_id(id)
         if not data:
             raise NoResultFound()
 
         await self.session.delete(data)
         await self.session.commit()
-
-        return True

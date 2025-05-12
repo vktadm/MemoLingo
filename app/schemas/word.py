@@ -7,20 +7,23 @@ class BaseWordSchema(BaseModel):
     translation: str
     transcription: Optional[str]
     description: Optional[str]
-
-    model_config = ConfigDict(from_attributes=True)
+    img: Optional[str]
 
 
 class CreateWordSchema(BaseWordSchema):
+    wrd: str
+    translation: str
     transcription: Optional[str] = None
     description: Optional[str] = None
+    img: Optional[str] = None
 
 
 class UpdateWordSchema(CreateWordSchema):
+    id: Optional[int] = None
     wrd: Optional[str] = None
     translation: Optional[str] = None
 
 
 class WordSchema(BaseWordSchema):
+    model_config = ConfigDict(from_attributes=True)
     id: int
-    img: Optional[str]

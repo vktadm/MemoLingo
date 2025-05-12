@@ -21,16 +21,20 @@ class WordRepository:
     session: AsyncSession  # Асинхронная сессия для работы с БД
 
     @handle_db_errors
-    async def get_words(self) -> Optional[List[Word]]:
+    async def get_all(self) -> Optional[List[Word]]:
         """Получает все существующие слова из базы данных."""
         stmt = select(Word).order_by(Word.wrd)
         result: Result = await self.session.execute(stmt)
-        words = result.scalars().all()
 
-        return list(words)
+        return list(result.scalars().all())
 
     @handle_db_errors
-    async def get_word(
+    async def get_by_id(self, id: int) -> Optional[Word]:
+        """Получает слово по его идентификатору."""
+        return await self.session.get(Word, id)
+
+    @handle_db_errors
+    async def get_by_wrd(
         self,
         wrd: str,
     ) -> Optional[Word]:
@@ -40,54 +44,38 @@ class WordRepository:
         return await self.session.scalar(stmt)
 
     @handle_db_errors
-    async def get_word_by_id(
-        self,
-        word_id: int,
-    ) -> Optional[Word]:
-        """Получает слово по его идентификатору."""
-        return await self.session.get(Word, word_id)
-
-    @handle_db_errors
-    async def create_word(
-        self,
-        new_word: CreateWordSchema,
-        img: str = None,
-    ) -> Word:
+    async def create(self, new_data: CreateWordSchema) -> Word:
         """Создает новое слово в базе данных."""
-        word = Word(**new_word.model_dump(), img=img)
-        self.session.add(word)
+        data = Word(**new_data.model_dump())
+        self.session.add(data)
         await self.session.commit()
+        await self.session.flush()
 
-        return await self.get_word(new_word.wrd)
+        return data
 
     @handle_db_errors
-    async def update_word(
+    async def update(
         self,
-        word_id: int,
-        update_word: UpdateWordSchema,
+        update_data: UpdateWordSchema,
     ) -> Word:
         """Обновляет существующее слово."""
-        word_db = await self.get_word_by_id(word_id)
-        if not word_db:
+        data = await self.get_by_id(update_data.id)
+        if not data:
             raise NoResultFound()
 
-        update_data = update_word.model_dump()
-        for key, value in update_data.items():
-            setattr(word_db, key, value)
+        for key, value in update_data.model_dump().items():
+            setattr(data, key, value)
 
         await self.session.commit()
-        await self.session.refresh(word_db)
+        await self.session.refresh(data)
 
-        return word_db
+        return data
 
     @handle_db_errors
-    async def delete_word(self, word_id: int) -> bool:
-        """Удаляет слово из базы данных."""
-        word = await self.get_word_by_id(word_id)
-        if not word:
+    async def delete(self, id: int):
+        data = await self.get_by_id(id)
+        if not data:
             raise NoResultFound()
 
-        await self.session.delete(word)
+        await self.session.delete(data)
         await self.session.commit()
-
-        return True

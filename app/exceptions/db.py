@@ -5,7 +5,7 @@ class NotFoundException(APIException):
     def __init__(self):
         super().__init__(
             status_code=404,
-            detail="There are no records yet.",
+            detail="No content found.",
         )
 
 
