@@ -1,0 +1,48 @@
+body {
+  background-color: #ebedf0;
+}
+
+/* body {
+  background-color: #ffffff;
+} */
+
+.background-main {
+  background-color: #ebedf0;
+}
+
+.custom-light-bg {
+  background-color: #ffffff !important;
+}
+
+/* CommonButton */
+.btn-custom-light {
+  background-color: #ebedf0;
+  border-color: #ebedf0;
+  transition: all 0.3s ease;
+}
+
+.btn-custom-light:hover {
+  background-color: #e2e6ea;
+  border-color: #d4d9df;
+}
+
+.btn-custom-light:active {
+  background-color: #dae0e5;
+  border-color: #d3d9df;
+}
+
+/* ButtonWhite */
+.btn-white {
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.white:hover {
+  background-color: #e2e6ea;
+  border-color: #d4d9df;
+}
+
+.white:active {
+  background-color: #e2e6ea;
+  border-color: #d4d9df;
+}
