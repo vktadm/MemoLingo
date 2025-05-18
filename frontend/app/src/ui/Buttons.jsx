@@ -76,16 +76,16 @@ export function Buttons() {
       layouts: ["d-grid gap-2", ""],
     },
     {
-      title: "ShowHideButton - show",
+      title: "GroupButton",
       component: new GroupButton(buttons, handleButtonClick).render(),
       layouts: ["d-grid gap-2", ""],
     },
   ];
 
   return (
-    <Container className="m-5">
+    <Container>
       {buttonComponents.map((item, index) => (
-        <Row key={index}>
+        <Row key={index} className="mt-3">
           <h3>{item.title}</h3>
           {item.layouts.map((layout, layoutIndex) => (
             <div key={layoutIndex} className={`my-3 ${layout}`}>

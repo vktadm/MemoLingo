@@ -1,120 +1,110 @@
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faBook,
-  faPlus,
-  faClock,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-  Container,
-  Row,
-  Col,
-  Button,
-  Card,
-  Accordion,
-  ListGroup,
-  ToggleButton,
-} from "react-bootstrap";
+import { faBook, faPlus, faClock } from "@fortawesome/free-solid-svg-icons";
+import { Container, Row, Col, Card } from "react-bootstrap";
 
 import MainNavbar from "../components/Navbar";
+import { ButtonFactory } from "../components/Buttons";
 
 function Home() {
-  const revise_count = 100;
-  const lear_total = 10;
-  const learn_day = 3;
+  const userData = { id: 1, username: "user", email: "example.com" };
+  const usereStatistics = { dayLearnTotal: 10, dayLearn: 3, revise: 136 };
+
+  const [activeContent, setActiveContent] = useState("learn");
+  const navButtons = [
+    {
+      id: "learn",
+      title: "Учить",
+      selected: activeContent === "learn",
+    },
+    {
+      id: "dictionary",
+      title: "Словарь",
+      selected: activeContent === "dictionary",
+    },
+    {
+      id: "settings",
+      title: "Настройки",
+      selected: activeContent === "settings",
+    },
+  ];
+
+  const handleButtonClick = (contentId) => {
+    setActiveContent(contentId);
+  };
   return (
-    <>
-      <MainNavbar />
-      <Container>
-        <Row className="justify-content-center">
-          <Col xs={12} md={10}>
-            <Card className="m-4">
-              <Card.Body>
-                <Accordion defaultActiveKey="0">
-                  <Accordion.Item eventKey="0">
-                    <Accordion.Header>Категории на изучении</Accordion.Header>
-                    <Accordion.Body>
-                      <ListGroup>
-                        <ListGroup.Item>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <div className="d-flex align-items-center">
-                                <FontAwesomeIcon
-                                  icon={faBook}
-                                  size="lg"
-                                  className="me-2"
-                                />
-                                <span>Название категории</span>
-                              </div>
-                            </div>
-                            <div>
-                              <ToggleButton size="sm">
-                                <FontAwesomeIcon icon={faCheck} />
-                              </ToggleButton>
-                            </div>
-                          </div>
-                        </ListGroup.Item>
-                        <ListGroup.Item>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
-                              <div className="d-flex align-items-center">
-                                <FontAwesomeIcon
-                                  icon={faBook}
-                                  size="lg"
-                                  className="me-2"
-                                />
-                                <span>Название категории</span>
-                              </div>
-                            </div>
-                            <div>
-                              <ToggleButton size="sm">
-                                <FontAwesomeIcon icon={faCheck} />
-                              </ToggleButton>
-                            </div>
-                          </div>
-                        </ListGroup.Item>
-                      </ListGroup>
-                      <Button variant="success" className="mt-4">
-                        Сохранить
-                      </Button>
-                    </Accordion.Body>
-                  </Accordion.Item>
-                </Accordion>
-              </Card.Body>
-            </Card>
-            <Card className="m-4">
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <FontAwesomeIcon icon={faPlus} size="lg" className="me-2" />
-                    <span>Изучать новые слова</span>
-                  </div>
+    <Container fluid>
+      <MainNavbar
+        navButtons={navButtons}
+        userData={userData}
+        handleButtonClick={handleButtonClick}
+      />
+      <Row className="justify-content-center">
+        <Col>
+          {activeContent === navButtons[0].id && (
+            <>
+              <Card className="my-3">
+                <Card.Body className="d-flex justify-content-between align-items-center">
+                  {ButtonFactory.createLinkButton(
+                    "Категории на изучении",
+                    undefined,
+                    undefined,
+                    faBook
+                  )}
+                </Card.Body>
+              </Card>
+
+              <Card className="my-3">
+                <Card.Body className="d-flex justify-content-between align-items-center">
+                  {ButtonFactory.createLinkButton(
+                    "Изучать новые слова",
+                    undefined,
+                    undefined,
+                    faPlus
+                  )}
                   <div>
-                    Заученно сегодня: {learn_day} / {lear_total}
+                    Заученно сегодня:{" "}
+                    <strong>
+                      {usereStatistics.dayLearn} /{" "}
+                      {usereStatistics.dayLearnTotal}
+                    </strong>
                   </div>
-                </div>
+                </Card.Body>
+              </Card>
+
+              <Card className="my-3">
+                <Card.Body className="d-flex justify-content-between align-items-center">
+                  {ButtonFactory.createLinkButton(
+                    "Повторить слова",
+                    undefined,
+                    undefined,
+                    faClock
+                  )}
+                  <div>
+                    На повторении: <strong>{usereStatistics.revise}</strong>
+                  </div>
+                </Card.Body>
+              </Card>
+            </>
+          )}
+
+          {activeContent === navButtons[1].id && (
+            <Card>
+              <Card.Body className="d-flex justify-content-between align-items-center">
+                Словарь
               </Card.Body>
             </Card>
-            <Card className="m-4">
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <FontAwesomeIcon
-                      icon={faClock}
-                      size="lg"
-                      className="me-2"
-                    />
-                    <span>Повторить слова</span>
-                  </div>
-                  <div>На повторении: {revise_count}</div>
-                </div>
+          )}
+
+          {activeContent === navButtons[2].id && (
+            <Card>
+              <Card.Body className="d-flex justify-content-between align-items-center">
+                Настройки
               </Card.Body>
             </Card>
-          </Col>
-        </Row>
-      </Container>
-    </>
+          )}
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

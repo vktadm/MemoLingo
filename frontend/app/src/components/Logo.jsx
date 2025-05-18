@@ -1,9 +1,21 @@
 import logoUrl from "./static/MemoLingo.svg?react";
 
-function Logo({ ...props }) {
-  return <img src={logoUrl} alt="Logo" props />;
+function Logo({ width = "100%", maxWidth = "150px", ...props }) {
+  return (
+    <img
+      src={logoUrl}
+      alt="MemoLingo Logo"
+      style={{
+        width: width,
+        height: "auto",
+        maxWidth: maxWidth,
+        display: "block",
+      }}
+      {...props}
+    />
+  );
 }
 
 export function LogoCommon() {
-  return <Logo />;
+  return <Logo className="img-fluid" />;
 }

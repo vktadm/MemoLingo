@@ -116,6 +116,34 @@ class ReturnButton extends ABSButton {
   }
 }
 
+class LinkButton extends ABSButton {
+  constructor(
+    text = "Ок",
+    isDisabled = false,
+    onClick = () => {},
+    fa = faCheck,
+    props = {}
+  ) {
+    super(text, isDisabled, "link", onClick, props);
+    this.fa = fa;
+  }
+
+  render() {
+    return (
+      <Button
+        variant={this.variant}
+        className="text-decoration-none text-dark"
+        disabled={this.isDisabled}
+        onClick={this.onClick}
+        {...this.props}
+      >
+        <FontAwesomeIcon icon={this.fa} size="lg" className="me-2" />
+        <span>{this.text}</span>
+      </Button>
+    );
+  }
+}
+
 class GoogleButton extends ABSButton {
   constructor(
     text = "Google",
@@ -210,4 +238,6 @@ export const ButtonFactory = {
     new ReturnButton(text, isDisabled, onClick, props).render(),
   createGoogleButton: (text, isDisabled, onClick, props) =>
     new GoogleButton(text, isDisabled, onClick, props).render(),
+  createLinkButton: (text, isDisabled, onClick, fa, props) =>
+    new LinkButton(text, isDisabled, onClick, fa, props).render(),
 };
