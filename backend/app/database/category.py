@@ -6,8 +6,7 @@ from .base import Base
 
 
 class Category(Base):
-    title: Mapped[str] = mapped_column(unique=True)
-    translation: Mapped[Optional[str]] = mapped_column(nullable=True)
+    title: Mapped[str] = mapped_column()
     description: Mapped[Optional[str]] = mapped_column(nullable=True)
     icon: Mapped[Optional[str]] = mapped_column(nullable=True)
     words: Mapped[List["Word"]] = relationship(

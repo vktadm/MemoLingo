@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
   db-test:
     image: postgres:latest
     restart: always
     container_name: postgres-test-db
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER_TEST}
+      POSTGRES_PASSWORD: ${DB_PASSWORD_TEST}
+      POSTGRES_DB: ${DB_NAME_TEST}
     ports:
       - "5432:5432"
     volumes:
@@ -23,3 +21,4 @@ services:
 
 volumes:
   postgres_data:
+

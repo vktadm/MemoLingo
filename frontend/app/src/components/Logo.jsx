@@ -10,12 +10,18 @@ function Logo({ width = "100%", maxWidth = "150px", ...props }) {
         height: "auto",
         maxWidth: maxWidth,
         display: "block",
+        marginLeft: "auto",
+        marginRight: "auto",
       }}
       {...props}
     />
   );
 }
 
-export function LogoCommon() {
-  return <Logo className="img-fluid" />;
+export function LogoCommon({ ...props }) {
+  return (
+    <div style={{ textAlign: "center" }}>
+      <Logo {...props} />
+    </div>
+  );
 }

@@ -14,13 +14,11 @@ import { Button, ToggleButton, ButtonGroup } from "react-bootstrap";
 class ABSButton {
   constructor(
     text = "Кнопка",
-    isDisabled = false,
     variant = "light",
     onClick = () => {},
     props = {}
   ) {
     this.text = text;
-    this.isDisabled = isDisabled;
     this.variant = variant;
     this.onClick = onClick;
     this.props = props;
@@ -30,7 +28,6 @@ class ABSButton {
     return (
       <Button
         variant={this.variant}
-        disabled={this.isDisabled}
         className={this.variant === "light" ? "btn-custom-light" : ""}
         onClick={this.onClick}
         {...this.props}
@@ -42,13 +39,8 @@ class ABSButton {
 }
 
 export class SaveButton extends ABSButton {
-  constructor(
-    text = "Сохранить",
-    isDisabled = false,
-    onClick = () => {},
-    props = {}
-  ) {
-    super(text, isDisabled, "success", onClick, props);
+  constructor(text = "Сохранить", onClick = () => {}, props = {}) {
+    super(text, "success", onClick, props);
   }
 
   render() {
@@ -57,8 +49,8 @@ export class SaveButton extends ABSButton {
 }
 
 class CommonButton extends ABSButton {
-  constructor(text = "Ок", isDisabled = false, onClick = () => {}, props = {}) {
-    super(text, isDisabled, "light", onClick, props);
+  constructor(text = "Ок", onClick = () => {}, props = {}) {
+    super(text, "light", onClick, props);
   }
 
   render() {
@@ -67,8 +59,8 @@ class CommonButton extends ABSButton {
 }
 
 class ConfirmButton extends ABSButton {
-  constructor(text = "Ок", isDisabled = false, onClick = () => {}, props = {}) {
-    super(text, isDisabled, "primary", onClick, props);
+  constructor(text = "Ок", onClick = () => {}, props = {}) {
+    super(text, "primary", onClick, props);
   }
 
   render() {
@@ -77,13 +69,8 @@ class ConfirmButton extends ABSButton {
 }
 
 class DeleteButton extends ABSButton {
-  constructor(
-    text = "Удалить",
-    isDisabled = false,
-    onClick = () => {},
-    props = {}
-  ) {
-    super(text, isDisabled, "danger", onClick, props);
+  constructor(text = "Удалить", onClick = () => {}, props = {}) {
+    super(text, "danger", onClick, props);
   }
 
   render() {
@@ -91,13 +78,8 @@ class DeleteButton extends ABSButton {
   }
 }
 class ReturnButton extends ABSButton {
-  constructor(
-    text = "Вернуть",
-    isDisabled = false,
-    onClick = () => {},
-    props = {}
-  ) {
-    super(text, isDisabled, "link", onClick, props);
+  constructor(text = "Вернуть", onClick = () => {}, props = {}) {
+    super(text, "link", onClick, props);
   }
 
   render() {
@@ -105,7 +87,6 @@ class ReturnButton extends ABSButton {
       <Button
         variant={this.variant}
         className="text-decoration-none"
-        disabled={this.isDisabled}
         onClick={this.onClick}
         {...this.props}
       >
@@ -117,14 +98,8 @@ class ReturnButton extends ABSButton {
 }
 
 class LinkButton extends ABSButton {
-  constructor(
-    text = "Ок",
-    isDisabled = false,
-    onClick = () => {},
-    fa = faCheck,
-    props = {}
-  ) {
-    super(text, isDisabled, "link", onClick, props);
+  constructor(text = "Ок", onClick = () => {}, fa = faCheck, props = {}) {
+    super(text, "link", onClick, props);
     this.fa = fa;
   }
 
@@ -133,7 +108,6 @@ class LinkButton extends ABSButton {
       <Button
         variant={this.variant}
         className="text-decoration-none text-dark"
-        disabled={this.isDisabled}
         onClick={this.onClick}
         {...this.props}
       >
@@ -145,13 +119,8 @@ class LinkButton extends ABSButton {
 }
 
 class GoogleButton extends ABSButton {
-  constructor(
-    text = "Google",
-    isDisabled = false,
-    onClick = () => {},
-    props = {}
-  ) {
-    super(text, isDisabled, "light", onClick, props);
+  constructor(text = "Google", onClick = () => {}, props = {}) {
+    super(text, "light", onClick, props);
   }
 
   render() {
@@ -168,7 +137,7 @@ class GoogleButton extends ABSButton {
   }
 }
 
-export function ToggleButtonCheck({ id, isDisabled = false }) {
+export function ToggleButtonCheck({ id }) {
   const [checked, setChecked] = useState(false);
 
   return (
@@ -177,7 +146,6 @@ export function ToggleButtonCheck({ id, isDisabled = false }) {
       type="checkbox"
       variant="outline-primary"
       checked={checked}
-      disabled={isDisabled}
       value="1"
       onChange={(e) => setChecked(e.currentTarget.checked)}
       size="sm"
@@ -200,7 +168,6 @@ export class GroupButton {
           <Button
             key={item.id}
             variant={item.selected ? "primary" : "light"}
-            disabled={item.isDisabled}
             onClick={() => this.onButtonClick(item.id)} // Передаем id при клике
           >
             {item.title}
@@ -226,18 +193,18 @@ export function ShowHideButton({ onToggle, isVisible }) {
 
 // Фабрика для удобного использования
 export const ButtonFactory = {
-  createSaveButton: (text, isDisabled, onClick, props) =>
-    new SaveButton(text, isDisabled, onClick, props).render(),
-  createCommonButton: (text, isDisabled, onClick, props) =>
-    new CommonButton(text, isDisabled, onClick, props).render(),
-  createConfirmButton: (text, isDisabled, onClick, props) =>
-    new ConfirmButton(text, isDisabled, onClick, props).render(),
-  createDeleteButton: (text, isDisabled, onClick, props) =>
-    new DeleteButton(text, isDisabled, onClick, props).render(),
-  createReturnButton: (text, isDisabled, onClick, props) =>
-    new ReturnButton(text, isDisabled, onClick, props).render(),
-  createGoogleButton: (text, isDisabled, onClick, props) =>
-    new GoogleButton(text, isDisabled, onClick, props).render(),
-  createLinkButton: (text, isDisabled, onClick, fa, props) =>
-    new LinkButton(text, isDisabled, onClick, fa, props).render(),
+  createSaveButton: (text, onClick, props) =>
+    new SaveButton(text, onClick, props).render(),
+  createCommonButton: (text, onClick, props) =>
+    new CommonButton(text, onClick, props).render(),
+  createConfirmButton: (text, onClick, props) =>
+    new ConfirmButton(text, onClick, props).render(),
+  createDeleteButton: (text, onClick, props) =>
+    new DeleteButton(text, onClick, props).render(),
+  createReturnButton: (text, onClick, props) =>
+    new ReturnButton(text, onClick, props).render(),
+  createGoogleButton: (text, onClick, props) =>
+    new GoogleButton(text, onClick, props).render(),
+  createLinkButton: (text, onClick, fa, props) =>
+    new LinkButton(text, onClick, fa, props).render(),
 };

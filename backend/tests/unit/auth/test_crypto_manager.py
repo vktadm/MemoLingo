@@ -1,6 +1,6 @@
 import pytest
 
-from app.services import CryptoService
+from backend.app.services import CryptoService
 
 pytestmark = pytest.mark.asyncio
 

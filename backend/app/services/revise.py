@@ -35,10 +35,7 @@ async def get_random_words(
 ) -> list[str]:
 
     stmt = (
-        select(Category.wrd)
-        .where(Category.id != word_id)
-        .order_by(func.random())
-        .limit(3)
+        select(Category).where(Category.id != word_id).order_by(func.random()).limit(3)
     )
     result: Result = await session.execute(stmt)
     words = result.scalars().all()

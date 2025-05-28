@@ -6,6 +6,8 @@ import "./styles/App.css";
 import Home from "./pages/Home";
 import UI from "./pages/UI";
 import NotFound from "./pages/NotFound";
+import Registeration from "./pages/Registration";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -14,10 +16,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/ui" element={<UI />} />
-          <Route path="*" element={<NotFound />}></Route>
-          {/* <Route path="/login" element={<Login />} /> */}
+          <Route path="/login" element={<Login />} />
           {/* <Route path="/logout" element={<Logout />} /> */}
-          {/* <Route path="/register" element={<RegisterAndLogout />} /> */}
+          <Route path="/register" element={<Registeration />} />
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </BrowserRouter>
     </>

@@ -60,8 +60,8 @@ export function Buttons() {
       layouts: ["d-grid gap-2", ""],
     },
     {
-      title: "ReturnWordButton - disabled",
-      component: ButtonFactory.createReturnButton(undefined, true),
+      title: "ReturnWordButton",
+      component: ButtonFactory.createReturnButton(),
       layouts: ["d-grid gap-2", ""],
     },
     {

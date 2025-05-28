@@ -16,6 +16,7 @@ class UsersRepository:
     @handle_db_errors
     async def get_users(self) -> List[User]:
         """Получает всех существующих пользователей."""
+        print(self.session)
         stmt = select(User).order_by(User.id)
         result: Result = await self.session.execute(stmt)
         words = result.scalars().all()

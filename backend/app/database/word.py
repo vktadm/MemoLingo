@@ -6,7 +6,7 @@ from .base import Base
 
 
 class Word(Base):
-    wrd: Mapped[str] = mapped_column(unique=True)
+    wrd: Mapped[str] = mapped_column()
     translation: Mapped[str]
     transcription: Mapped[Optional[str]] = mapped_column(nullable=True)
     description: Mapped[Optional[str]] = mapped_column(nullable=True)

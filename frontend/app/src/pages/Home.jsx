@@ -47,7 +47,6 @@ function Home() {
                   {ButtonFactory.createLinkButton(
                     "Категории на изучении",
                     undefined,
-                    undefined,
                     faBook
                   )}
                 </Card.Body>
@@ -57,7 +56,6 @@ function Home() {
                 <Card.Body className="d-flex justify-content-between align-items-center">
                   {ButtonFactory.createLinkButton(
                     "Изучать новые слова",
-                    undefined,
                     undefined,
                     faPlus
                   )}
@@ -75,7 +73,6 @@ function Home() {
                 <Card.Body className="d-flex justify-content-between align-items-center">
                   {ButtonFactory.createLinkButton(
                     "Повторить слова",
-                    undefined,
                     undefined,
                     faClock
                   )}
