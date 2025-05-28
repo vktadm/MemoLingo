@@ -1,7 +1,7 @@
 import pytest
 
-from backend_old.app.services import JWTService
-from backend_old.app.settings import Settings
+from backend.src.app.services import JWTService
+from backend.src.app.settings import Settings
 
 
 @pytest.fixture

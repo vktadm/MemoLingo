@@ -1,8 +1,4 @@
-import pytest
-
-from backend_old.app.services import CryptoService
-
-pytestmark = pytest.mark.asyncio
+from backend.src.app.services import CryptoService
 
 
 def test_hash_password__success(

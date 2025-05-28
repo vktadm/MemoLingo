@@ -1,7 +1,7 @@
 import pytest
 
-from backend_old.app.repository import UsersRepository
-from backend_old.app.services import AuthService
+from backend.src.app.repository import UsersRepository
+from backend.src.app.services import AuthService
 
 
 @pytest.fixture

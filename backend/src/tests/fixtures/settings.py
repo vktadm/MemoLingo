@@ -13,7 +13,6 @@ class FakePostgresSettings(BaseModel):
     DB_HOST: int = env("DB_HOST_TEST")
     DB_PORT: int = env("DB_PORT_TEST")
     DB_NAME: str = env("DB_NAME_TEST")
-    echo: bool = True
 
     @property
     def get_url(self) -> str:

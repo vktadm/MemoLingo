@@ -2,11 +2,9 @@ from datetime import timezone, timedelta, datetime as dt
 
 import pytest
 
-from backend_old.app.schemas import UserSchema, UserLoginSchema
-from backend_old.app.services import GoogleAuthService, JWTService
-from backend_old.app.settings import Settings
-
-pytestmark = pytest.mark.asyncio
+from backend.src.app.schemas import UserSchema, UserLoginSchema
+from backend.src.app.services import GoogleAuthService, JWTService
+from backend.src.app.settings import Settings
 
 
 def test_google_redirect_url__success(
@@ -52,6 +50,7 @@ def test_create_access_token__success(
     assert decoded_username == username
 
 
+@pytest.mark.asyncio
 async def test_auth_google__success(
     mock_google_auth_service: GoogleAuthService,
 ):

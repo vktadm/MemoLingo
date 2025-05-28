@@ -2,8 +2,8 @@ import pytest
 from dataclasses import dataclass
 from faker import Factory
 
-from ....app.schemas import GoogleUserDataSchema
-from ....app.settings import GoogleSettings
+from backend.src.app.schemas import GoogleUserDataSchema
+from backend.src.app.settings import GoogleSettings
 
 faker = Factory.create()
 

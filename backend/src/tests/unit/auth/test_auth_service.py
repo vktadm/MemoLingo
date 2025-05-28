@@ -1,12 +1,8 @@
-import pytest
 from datetime import datetime as dt, timezone, timedelta
 
-from backend_old.app.schemas import UserSchema
-from backend_old.app.services import AuthService, JWTService
-
-from backend_old.app.settings import Settings
-
-pytestmark = pytest.mark.asyncio
+from backend.src.app.schemas import UserSchema
+from backend.src.app.services import AuthService, JWTService
+from backend.src.app.settings import Settings
 
 
 def test_create_access_token__success(

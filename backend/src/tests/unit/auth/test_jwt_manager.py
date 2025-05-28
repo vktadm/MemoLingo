@@ -1,9 +1,5 @@
-import pytest
 from datetime import datetime as dt, timezone, timedelta
-
-from backend_old.app.services import JWTService
-
-pytestmark = pytest.mark.asyncio
+from backend.src.app.services import JWTService
 
 
 def test_encode_decode_jwt__success(

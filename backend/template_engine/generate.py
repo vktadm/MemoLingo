@@ -3,7 +3,7 @@ from mako.template import Template
 
 from backend.template_engine.name_converter import converter
 from backend.template_engine.settings import GeneratorSettings, settings
-from app.database import Category
+from backend.app.database import Category
 from backend.template_engine.mako_model import MakoModel
 
 

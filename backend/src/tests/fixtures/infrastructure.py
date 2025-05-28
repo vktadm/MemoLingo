@@ -1,11 +1,9 @@
 import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
-from backend_old.app.settings import settings as app_settings, Settings
+from backend.src.app.settings import settings as app_settings, Settings
 from .settings import fake_settings
 from backend.src.app.database import Base
-
-pytestmark = pytest.mark.asyncio
 
 
 @pytest.fixture
@@ -23,10 +21,10 @@ session_factory = async_sessionmaker(
 async def init_models():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
-        # await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
     yield
-    # async with engine.begin() as conn:
-    # await conn.run_sync(Base.metadata.drop_all)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest.fixture(scope="session")
