@@ -6,6 +6,9 @@ from backend.src.app.database import User
 
 faker = Factory.create()
 
+EXIST_GOOGLE_USER_EMAIL = "example@gmail.com"
+EXIST_GOOGLE_USER_USERNAME = "username"
+
 
 @register(_name="user")
 class UserFactory(factory.Factory):

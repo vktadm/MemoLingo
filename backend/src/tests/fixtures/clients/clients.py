@@ -4,6 +4,7 @@ from faker import Factory
 
 from backend.src.app.schemas import GoogleUserDataSchema
 from backend.src.app.settings import GoogleSettings
+from backend.src.tests.fixtures.models import EXIST_GOOGLE_USER_EMAIL
 
 faker = Factory.create()
 
@@ -31,6 +32,6 @@ def google_user_info_data() -> GoogleUserDataSchema:
     return GoogleUserDataSchema(
         username=faker.name(),
         google_access_token=faker.sha256(),
-        email=faker.email(),
+        email=EXIST_GOOGLE_USER_EMAIL,
         name=faker.name(),
     )
