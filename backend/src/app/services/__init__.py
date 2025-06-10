@@ -6,6 +6,7 @@ from .jwt_manager import JWTService
 from .google_auth import GoogleAuthService
 from .word import WordService
 from .category import CategoryService
+from .smtp import SMTPService
 
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "WordService",
     "CategoryService",
     "CategoryWordService",
+    "SMTPService",
 ]

@@ -3,6 +3,7 @@ from .auth import (
     TokenExpiredException,
     UserIncorrectPasswordException,
     UserAlreadyExistsException,
+    UserAlreadyConfirmException,
 )
 from .db import (
     NotFoundException,
@@ -16,6 +17,9 @@ from .client import (
     TimeoutException,
     RequestException,
 )
+
+
+from .smtp import SMTPTokenException, SMTPException, SMTPCooldownException
 
 __all__ = [
     # User
@@ -34,4 +38,8 @@ __all__ = [
     "ExternalServiceException",
     "TimeoutException",
     "RequestException",
+    # SMTP
+    "SMTPException",
+    "SMTPTokenException",
+    "SMTPCooldownException",
 ]

@@ -1,15 +1,21 @@
-from fastapi import Depends, security, Security
+from fastapi import Depends, security, Security, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
 from backend.src.app.settings import settings
-from backend.src.app.clients import GoogleClient, ImageAPIClient, IconAPIClient
+from backend.src.app.clients import (
+    GoogleClient,
+    ImageAPIClient,
+    IconAPIClient,
+    SMTPYandexClient,
+)
 from backend.src.app.repository import (
     UsersRepository,
     TokenBlackListRepository,
     WordRepository,
     CategoryRepository,
     CategoryWordRepository,
+    SMTPRepository,
 )
 from backend.src.app.services import (
     UserService,
@@ -20,6 +26,7 @@ from backend.src.app.services import (
     WordService,
     CategoryService,
     CategoryWordService,
+    SMTPService,
 )
 
 from backend.src.app.database import db_helper
@@ -57,9 +64,19 @@ async def get_block_list_repository(
     return TokenBlackListRepository(session=session, settings=settings)
 
 
+async def get_smtp_repository(
+    session: Redis = Depends(cache_db_helper.get_redis_session),
+) -> SMTPRepository:
+    return SMTPRepository(session=session)
+
+
 # ---------- CLIENTS ---------- #
 async def get_google_client() -> GoogleClient:
     return GoogleClient(settings=settings.auth_google)
+
+
+async def get_yandex_smtp_client() -> SMTPYandexClient:
+    return SMTPYandexClient(settings=settings.smtp_yandex)
 
 
 async def get_image_client() -> ImageAPIClient:
@@ -77,6 +94,20 @@ async def get_jwt_service() -> JWTService:
 
 async def get_crypto_service() -> CryptoService:
     return CryptoService()
+
+
+async def get_smtp_service(
+    user_repository: UsersRepository = Depends(get_user_repository),
+    smtp_repository: SMTPRepository = Depends(get_smtp_repository),
+    crypto_service: CryptoService = Depends(get_crypto_service),
+    smtp_client: SMTPYandexClient = Depends(get_yandex_smtp_client),
+) -> SMTPService:
+    return SMTPService(
+        user_repository=user_repository,
+        smtp_repository=smtp_repository,
+        crypto_service=crypto_service,
+        smtp_client=smtp_client,
+    )
 
 
 async def get_auth_service(

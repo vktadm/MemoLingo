@@ -62,6 +62,17 @@ class GoogleSettings(BaseModel):
         return f"{base_url}?{urlencode(params)}"
 
 
+class YandexSMTPSettings(BaseModel):
+    HOSTNAME: str = env("YANDEX_SMTP_HOSTNAME")
+    PORT: int = env("YANDEX_SMTP_PORT")
+    USERNAME: str = env("YANDEX_SENDER_USERNAME")
+    PASSWORD: str = env("YANDEX_APP_PASSWORD")
+    REDIRECT_URL: str = "http://127.0.0.1:8000/api/v1/users/verify_email"
+    TLS: bool = False
+    START_TLS: bool = True
+    VALIDATE_CERTS: bool = False  # TODO: Только для dev!!!
+
+
 class ImageAPISettings(BaseModel):
     ACCESS_KEY: str = env("UNSPLASH_ACCESS_KEY")
     URL: str = "https://api.unsplash.com/photos/random"
@@ -73,6 +84,7 @@ class Settings(BaseSettings):
     cache: RedisSettings = RedisSettings()
     auth_jwt: JWTSettings = JWTSettings()
     auth_google: GoogleSettings = GoogleSettings()
+    smtp_yandex: YandexSMTPSettings = YandexSMTPSettings()
     image: ImageAPISettings = ImageAPISettings()
 
 

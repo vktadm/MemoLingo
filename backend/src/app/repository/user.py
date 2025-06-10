@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from typing import Optional, List
 from sqlalchemy import select, Result
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.src.app.database import User
 from backend.src.app.decorators import handle_db_errors
+from backend.src.app.schemas import UpdateUserSchema
 
 
 @dataclass
@@ -85,3 +87,27 @@ class UsersRepository:
         self.session.add(user)
         await self.session.commit()
         return user
+
+    @handle_db_errors
+    async def update(self, update_data: UpdateUserSchema):
+        data = await self.get_user_by_email(update_data.email)
+        if not data:
+            raise NoResultFound()
+
+        for key, value in update_data.model_dump().items():
+            setattr(data, key, value)
+
+        await self.session.commit()
+        await self.session.refresh(data)
+
+        return data
+
+    @handle_db_errors
+    async def activate(self, email: str):
+        data = await self.get_user_by_email(email)
+        if not data:
+            raise NoResultFound()
+
+        data.is_active = True
+        await self.session.commit()
+        await self.session.refresh(data)

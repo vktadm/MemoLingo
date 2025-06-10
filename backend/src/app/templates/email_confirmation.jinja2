@@ -1,0 +1,47 @@
+{# email_confirmation.jinja2 #}
+{% if format == 'html' %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Email</title>
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Confirm Your Email</h2>
+        <p>Thank you for registering with {{ company_name }}! Please confirm your email address to activate your account.</p>
+
+        <a href="{{ confirmation_url }}" class="button">Confirm Email</a>
+
+        <p>If the link doesn't work, copy and paste this link into your browser:</p>
+        <p>{{ confirmation_url }}</p>
+
+        <p>This link will expire in {{ expiration_hours }} hours.</p>
+
+        <p>Best regards,<br>The {{ company_name }}</p>
+    </div>
+    
+    <div class="footer">
+        <p>If you didn't request this email, please ignore it.</p>
+    </div>
+</body>
+</html>
+
+{% else %}
+
+Confirm Your Email Address
+
+Thank you for registering with {{ company_name }}!
+
+Please confirm your email by visiting this link:
+{{ confirmation_url }}
+
+This link will expire in {{ expiration_hours }} hours.
+
+If you didn't request this email, please ignore it.
+
+Best regards,
+The {{ company_name }}
+{% endif %}

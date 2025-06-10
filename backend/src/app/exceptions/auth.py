@@ -31,3 +31,11 @@ class UserIncorrectPasswordException(APIException):
             status_code=401,
             detail="Incorrect password! Try again.",
         )
+
+
+class UserAlreadyConfirmException(APIException):
+    def __init__(self):
+        super().__init__(
+            status_code=200,
+            detail="The user has already been activated.",
+        )
