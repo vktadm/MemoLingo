@@ -3,6 +3,7 @@ from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
 from dataclasses import dataclass
 
+from backend.src.app.decorators import handle_client_errors
 from backend.src.app.settings import YandexSMTPSettings
 
 
@@ -10,7 +11,8 @@ from backend.src.app.settings import YandexSMTPSettings
 class SMTPYandexClient:
     settings: YandexSMTPSettings
 
-    async def send_email(self, email_to: str, confirmation_url: str) -> bool:
+    @handle_client_errors
+    async def send_email(self, email_to: str, confirmation_url: str):
         env = Environment(loader=FileSystemLoader("templates/"))
         html_template = env.get_template("email_confirmation.jinja2")
 
@@ -35,18 +37,13 @@ class SMTPYandexClient:
         msg.set_content(text_content)
         msg.add_alternative(html_content, subtype="html")
 
-        try:
-            await aiosmtplib.send(
-                msg,
-                hostname=self.settings.HOSTNAME,
-                port=self.settings.PORT,
-                username=self.settings.USERNAME,
-                password=self.settings.PASSWORD,
-                use_tls=self.settings.TLS,
-                start_tls=self.settings.START_TLS,
-                validate_certs=self.settings.VALIDATE_CERTS,
-            )
-            return True
-        except Exception as e:
-            print(e)
-            return False
+        await aiosmtplib.send(
+            msg,
+            hostname=self.settings.HOSTNAME,
+            port=self.settings.PORT,
+            username=self.settings.USERNAME,
+            password=self.settings.PASSWORD,
+            use_tls=self.settings.TLS,
+            start_tls=self.settings.START_TLS,
+            validate_certs=self.settings.VALIDATE_CERTS,
+        )

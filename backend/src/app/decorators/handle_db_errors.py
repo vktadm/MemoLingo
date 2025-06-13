@@ -1,3 +1,4 @@
+import logging
 from functools import wraps
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError, NoResultFound
 
@@ -9,6 +10,8 @@ from backend.src.app.exceptions import (
     RepositoryException,
     DatabaseException,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def handle_db_errors(func):
@@ -23,17 +26,17 @@ def handle_db_errors(func):
             raise NotFoundException()
 
         except IntegrityError as e:
-            print(f"{e} in {operation}.")
+            logger.error(f"{e} in {operation}.")
             if "unique constraint" in str(e).lower():
                 raise ConstraintViolationException()
             raise ContentConflictException()
 
         except SQLAlchemyError as e:
-            print(f"{e} in {operation}.")
+            logger.error(f"{e} in {operation}.")
             raise RepositoryException()
 
         except Exception as e:
-            print(f"{e} in {operation}.")
+            logger.error(f"{e} in {operation}.")
             raise DatabaseException()
 
     return wrapper

@@ -1,13 +1,30 @@
-import { useState } from "react";
-import { faBook, faPlus, faClock } from "@fortawesome/free-solid-svg-icons";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { faBook, faClock, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import { Card, Col, Container, Row } from "react-bootstrap";
 
-import MainNavbar from "../components/Navbar";
+import api from "../Api";
 import { ButtonFactory } from "../components/Buttons";
+import MainNavbar from "../components/Navbar";
 
 function Home() {
-  const userData = { id: 1, username: "user", email: "example.com" };
-  const usereStatistics = { dayLearnTotal: 10, dayLearn: 3, revise: 136 };
+  const [userData, setUserData] = useState({ id: 0, username: "" });
+  const [userStatistics, setUserStatistics] = useState({
+    dayLearnTotal: 0,
+    dayLearn: 0,
+    revise: 0,
+  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userResponse = await api.get("/users/about");
+        setUserData(userResponse.data);
+      } catch (error) {
+        alert(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const [activeContent, setActiveContent] = useState("learn");
   const navButtons = [
@@ -31,6 +48,7 @@ function Home() {
   const handleButtonClick = (contentId) => {
     setActiveContent(contentId);
   };
+
   return (
     <Container fluid>
       <MainNavbar
@@ -62,8 +80,7 @@ function Home() {
                   <div>
                     Заученно сегодня:{" "}
                     <strong>
-                      {usereStatistics.dayLearn} /{" "}
-                      {usereStatistics.dayLearnTotal}
+                      {userStatistics.dayLearn} / {userStatistics.dayLearnTotal}
                     </strong>
                   </div>
                 </Card.Body>
@@ -77,7 +94,7 @@ function Home() {
                     faClock
                   )}
                   <div>
-                    На повторении: <strong>{usereStatistics.revise}</strong>
+                    На повторении: <strong>{userStatistics.revise}</strong>
                   </div>
                 </Card.Body>
               </Card>

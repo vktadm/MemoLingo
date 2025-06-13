@@ -1,20 +1,28 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/App.css";
 
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import Home from "./pages/Home";
-import UI from "./pages/UI";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Registeration from "./pages/Registration";
-import Login from "./pages/Login";
+import UI from "./pages/UI";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/ui" element={<UI />} />
           <Route path="/login" element={<Login />} />
           {/* <Route path="/logout" element={<Logout />} /> */}

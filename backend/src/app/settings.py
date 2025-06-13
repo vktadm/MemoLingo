@@ -37,7 +37,7 @@ class RedisSettings(BaseModel):
 class JWTSettings(BaseModel):
     algorithm: str = "HS256"
     secret: str = env("SECRET_KEY")
-    access_token_expire_minutes: int = 3
+    access_token_expire_minutes: int = 30
 
 
 class GoogleSettings(BaseModel):

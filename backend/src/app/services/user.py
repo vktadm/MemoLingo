@@ -1,8 +1,5 @@
-import secrets
 from dataclasses import dataclass
-from datetime import datetime, timedelta
 
-from backend.src.app.clients.yandex import SMTPYandexClient
 from backend.src.app.exceptions import (
     NotFoundException,
     UserAlreadyExistsException,
@@ -32,31 +29,8 @@ class UserService:
             raise UserAlreadyExistsException()
 
         db_user = await self.user_repository.create_user(**user_create.model_dump())
-        # await self.send_confirmation_email(user_create.email)
 
         return UserSchema.model_validate(db_user)
-
-    # async def send_confirmation_email(self, email_to: str):
-    #     token: str = await self._get_confirmation_token(email_to=email_to)
-    #     confirmation_url = f"{self.smtp_client.settings.REDIRECT_URL}?token={token}"
-    #     if not await self.smtp_client.send_email(
-    #         email_to=email_to,
-    #         confirmation_url=confirmation_url,
-    #     ):
-    #         raise SMTPException()
-    #
-    # async def verify_confirmation_email(self, token: str):
-    #     email = await self.cache.check_token(token)
-    #     if not email:
-    #         raise ConfirmTokenException()
-    #
-    #     await self.user_repository.activate(email)
-    #
-    # async def _get_confirmation_token(self, email_to: str) -> str:
-    #     token = secrets.token_urlsafe(10)
-    #     await self.cache.add_token(token=token, email=email_to)
-    #
-    #     return token
 
     async def get_users(self) -> list[UserSchema]:
         """Получает список всех пользователей."""

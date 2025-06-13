@@ -7,8 +7,9 @@ from backend.src.app.dependencies import (
     get_auth_service,
     get_google_auth_service,
     get_access_token_for_request_user,
+    get_request_user_id,
 )
-from backend.src.app.schemas import UserLoginSchema
+from backend.src.app.schemas import UserLoginSchema, UserLoginFormSchema
 from backend.src.app.services import AuthService
 from backend.src.app.services.google_auth import GoogleAuthService
 
@@ -17,15 +18,22 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/login", response_model=UserLoginSchema)
 async def login(
-    username: Annotated[str, Form()],
-    password: Annotated[str, Form()],
+    user: UserLoginFormSchema,
     service: Annotated[AuthService, Depends(get_auth_service)],
 ) -> Optional[UserLoginSchema]:
     """Авторизация c login и password."""
-    return await service.login(username=username, password=password)
+    return await service.login(username=user.username, password=user.password)
 
 
-@router.post("/token/revoke", response_class=JSONResponse)
+@router.get("/check")
+async def check_auth(user: str = Depends(get_request_user_id)):
+    if user:
+        return True
+
+    return False
+
+
+@router.post("/logout", response_class=JSONResponse)
 async def revoke(
     auth_service: AuthService = Depends(get_auth_service),
     access_token: str = Depends(get_access_token_for_request_user),

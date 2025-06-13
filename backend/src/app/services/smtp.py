@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 from backend.src.app.clients.yandex import SMTPYandexClient
 from backend.src.app.exceptions import (
-    SMTPException,
     UserAlreadyConfirmException,
     NotFoundException,
     SMTPCooldownException,
@@ -40,11 +39,10 @@ class SMTPService:
         await self.smtp_repository.add_token(email=email_to, token=token)
         await self.smtp_repository.set_email_cooldown(email=email_to)
         confirmation_url = f"{self.smtp_client.settings.REDIRECT_URL}?token={token}"
-        if not await self.smtp_client.send_email(
+        await self.smtp_client.send_email(
             email_to=email_to,
             confirmation_url=confirmation_url,
-        ):
-            raise SMTPException()
+        )
 
     async def verify_confirmation_email(self, token: str):
         email = await self.smtp_repository.verify_token(token=token)

@@ -42,4 +42,5 @@ __all__ = [
     "SMTPException",
     "SMTPTokenException",
     "SMTPCooldownException",
+    "UserAlreadyConfirmException",
 ]

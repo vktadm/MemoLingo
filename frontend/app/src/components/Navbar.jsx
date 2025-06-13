@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { Container, Navbar } from "react-bootstrap";
 
+import { GroupButton } from "./Buttons";
 import { LogoCommon } from "./Logo";
 import { UserNav } from "./UserNav";
-import { GroupButton } from "./Buttons";
 
 function MainNavbar({ navButtons, userData, handleButtonClick }) {
   return (

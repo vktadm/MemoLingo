@@ -17,10 +17,10 @@ from backend.src.app.services.jwt_manager import JWTService
 class AuthService:
     """Сервис аутентификации и управления пользовательскими сессиями."""
 
-    user_repository: UsersRepository  # Работа с БД пользователей
-    jwt_service: JWTService  # Генерация токенов
-    crypto_service: CryptoService  # Проверка паролей
-    black_list: TokenBlackListRepository  # Хранение активных и неактивных токенов
+    user_repository: UsersRepository
+    jwt_service: JWTService
+    crypto_service: CryptoService
+    black_list: TokenBlackListRepository
 
     async def login(self, username: str, password: str) -> Optional[UserLoginSchema]:
         """Аутентификация пользователя по логину и паролю."""

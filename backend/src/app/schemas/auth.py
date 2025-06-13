@@ -3,6 +3,11 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+class UserLoginFormSchema(BaseModel):
+    username: str
+    password: str
+
+
 class GoogleUserDataSchema(BaseModel):
     username: str
     google_access_token: str
