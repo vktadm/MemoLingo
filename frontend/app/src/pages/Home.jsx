@@ -5,6 +5,7 @@ import { Card, Col, Container, Row } from "react-bootstrap";
 import api from "../Api";
 import { ButtonFactory } from "../components/Buttons";
 import MainNavbar from "../components/Navbar";
+import Profile from "../components/Profile";
 
 function Home() {
   const [userData, setUserData] = useState({ id: 0, username: "" });
@@ -50,7 +51,7 @@ function Home() {
   };
 
   return (
-    <Container fluid>
+    <Container>
       <MainNavbar
         navButtons={navButtons}
         userData={userData}
@@ -109,13 +110,7 @@ function Home() {
             </Card>
           )}
 
-          {activeContent === navButtons[2].id && (
-            <Card>
-              <Card.Body className="d-flex justify-content-between align-items-center">
-                Настройки
-              </Card.Body>
-            </Card>
-          )}
+          {activeContent === navButtons[2].id && <Profile />}
         </Col>
       </Row>
     </Container>

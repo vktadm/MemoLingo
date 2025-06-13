@@ -26,7 +26,7 @@ export function UserNav({ username, onLogout, onProfile }) {
       <Button variant="light" className="light" disabled>
         {username}
       </Button>
-      <Button variant="light" className="light-white" onClick={onProfile}>
+      <Button variant="light" className="light-white" disabled>
         <FontAwesomeIcon icon={faUser} size="lg" />
       </Button>
       <Button

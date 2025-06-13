@@ -27,7 +27,6 @@ class UserCreateSchema(BaseModel):
         min_length=3,
         max_length=20,
         examples=["your_username"],
-        pattern=r"^[a-zA-Z0-9_]+$",
     )
     email: EmailStr = Field(
         default=None,
