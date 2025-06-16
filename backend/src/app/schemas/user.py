@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from typing import Optional
 
 from pydantic import (
@@ -7,6 +8,7 @@ from pydantic import (
     ConfigDict,
     Field,
     field_validator,
+    computed_field,
 )
 
 
@@ -18,6 +20,8 @@ class UserSchema(BaseModel):
     password: Optional[str] = None
     google_access_token: Optional[str] = None
     is_active: bool = False
+    user_role: str
+    join_date: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -69,3 +73,7 @@ class UpdateUserSchema(BaseModel):
     name: Optional[str] = None
     password: Optional[str] = None
     google_access_token: Optional[str] = None
+
+
+class EmailRequestSchema(BaseModel):
+    email: EmailStr

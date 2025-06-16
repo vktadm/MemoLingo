@@ -1,7 +1,10 @@
+from typing import Optional
+
 from fastapi import Depends, security, Security, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
+from backend.src.app.exceptions import UserForbiddenException
 from backend.src.app.settings import settings
 from backend.src.app.clients import (
     GoogleClient,
@@ -172,21 +175,3 @@ async def get_user_service(
         user_repository=user_repository,
         crypto_service=crypto_service,
     )
-
-
-# ---------- SECURITY ---------- #
-reusable_oauth2 = security.HTTPBearer()
-
-
-async def get_access_token_for_request_user(
-    token: security.http.HTTPAuthorizationCredentials = Security(reusable_oauth2),
-) -> str:
-    return token.credentials
-
-
-async def get_request_user_id(
-    auth_service: AuthService = Depends(get_auth_service),
-    token: str = Depends(get_access_token_for_request_user),
-) -> int:
-    user: dict = await auth_service.validate_access_token(access_token=token)
-    return user["id"]

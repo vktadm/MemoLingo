@@ -1,10 +1,11 @@
 from .auth import (
-    TokenException,
-    TokenExpiredException,
     UserIncorrectPasswordException,
     UserAlreadyExistsException,
     UserAlreadyConfirmException,
+    UserForbiddenException,
+    UserNotFoundException,
 )
+from .jwt import TokenException
 from .db import (
     NotFoundException,
     ContentConflictException,
@@ -22,11 +23,12 @@ from .client import (
 from .smtp import SMTPTokenException, SMTPException, SMTPCooldownException
 
 __all__ = [
-    # User
+    # Auth
     "UserAlreadyExistsException",
     "UserIncorrectPasswordException",
-    # Auth
-    "TokenExpiredException",
+    "UserForbiddenException",
+    "UserNotFoundException",
+    # JWT
     "TokenException",
     # DB
     "NotFoundException",

@@ -16,9 +16,9 @@ class GoogleAuthService:
 
     async def auth_google(self, code: str) -> UserLoginSchema:
         """Аутентификация через Google OAuth."""
-        # TODO Ошибки
         user_data = await self.google_client.get_user_info(code)
         user = await self._get_or_create_google_user(user_data)
+
         return await self._generate_auth_response(user)
 
     async def get_google_redirect_url(self) -> str:
@@ -29,6 +29,7 @@ class GoogleAuthService:
         """Генерирует ответ с токеном для аутентифицированного пользователя."""
         access_token = self._create_access_token(user)
         await self._store_token(access_token)
+
         return UserLoginSchema(access_token=access_token, id=user.id)
 
     async def _get_or_create_google_user(
@@ -41,6 +42,7 @@ class GoogleAuthService:
         new_user = await self.user_repository.create_google_user(
             **user_data.model_dump()
         )
+
         return UserSchema.model_validate(new_user)
 
     async def _store_token(self, token: str):
@@ -54,4 +56,5 @@ class GoogleAuthService:
             "id": user.id,
             "username": user.username,
         }
+
         return self.jwt_service.encode_jwt(payload=jwt_payload)

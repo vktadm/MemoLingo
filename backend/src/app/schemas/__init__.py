@@ -1,5 +1,9 @@
-from .user import UserSchema, UserCreateSchema, UpdateUserSchema
-from .auth import UserLoginSchema, GoogleUserDataSchema, UserLoginFormSchema
+from .user import UserSchema, UserCreateSchema, UpdateUserSchema, EmailRequestSchema
+from .auth import (
+    UserLoginSchema,
+    GoogleUserDataSchema,
+    UserLoginFormSchema,
+)
 from .user_word import UserWordSchema, CreateUserWordSchema
 from .word import WordSchema, CreateWordSchema, UpdateWordSchema
 from .category import CategorySchema, CreateCategorySchema, UpdateCategorySchema
@@ -19,6 +23,7 @@ __all__ = [
     "UserSchema",
     "UserCreateSchema",
     "UpdateUserSchema",
+    "EmailRequestSchema",
     # Auth
     "UserLoginFormSchema",
     "UserLoginSchema",

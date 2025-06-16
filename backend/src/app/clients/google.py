@@ -24,8 +24,11 @@ class GoogleClient:
                 timeout=10.0,
             )
         response.raise_for_status()
+        google_data = response.json()
+
         return GoogleUserDataSchema(
-            **response.json(),
+            **google_data,
+            is_active=google_data["verified_email"],
             google_access_token=access_token,
             username=self._generate_random_username(),
         )
@@ -52,6 +55,7 @@ class GoogleClient:
                 timeout=10.0,
             )
         response.raise_for_status()
+
         return response.json()["access_token"]
 
     @staticmethod

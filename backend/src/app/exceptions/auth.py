@@ -1,19 +1,11 @@
 from .base import APIException
 
 
-class TokenException(APIException):
+class UserNotFoundException(APIException):
     def __init__(self):
         super().__init__(
-            status_code=401,
-            detail="Invalid token.",
-        )
-
-
-class TokenExpiredException(APIException):
-    def __init__(self):
-        super().__init__(
-            status_code=401,
-            detail="The token's lifetime has expired!",
+            status_code=404,
+            detail="User not found. Try again!",
         )
 
 
@@ -38,4 +30,12 @@ class UserAlreadyConfirmException(APIException):
         super().__init__(
             status_code=200,
             detail="The user has already been activated.",
+        )
+
+
+class UserForbiddenException(APIException):
+    def __init__(self):
+        super().__init__(
+            status_code=403,
+            detail="Forbidden resource.",
         )

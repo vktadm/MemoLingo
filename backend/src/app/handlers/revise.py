@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.app.dependencies import get_request_user_id
+from backend.src.app.access_verification import only_for_users
 from backend.src.app.schemas import WordSchema
 from backend.src.app.services import revise as crud
 from backend.src.app.database import db_helper
@@ -41,7 +41,7 @@ async def check_word(
 
 @router.get("/words", response_model=list[WordSchema])
 async def get_user_words(
-    user_id: int = Depends(get_request_user_id),
+    user_id: int = Depends(only_for_users),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     """Получает слова для повторения."""

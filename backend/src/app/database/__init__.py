@@ -9,6 +9,7 @@ __all__ = {
     "UserWord",
     "Word",
     "UserCategory",
+    "UserRole",
 }
 
 from .base import Base
@@ -20,3 +21,4 @@ from .category_word import CategoryWord
 from .user_word import UserWord
 from .word import Word
 from .user_category import UserCategory
+from .role import UserRole

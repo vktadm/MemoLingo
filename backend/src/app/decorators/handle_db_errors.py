@@ -22,8 +22,6 @@ def handle_db_errors(func):
         operation = func.__name__
         try:
             return await func(*args, **kwargs)
-        except NoResultFound:
-            raise NotFoundException()
 
         except IntegrityError as e:
             logger.error(f"{e} in {operation}.")

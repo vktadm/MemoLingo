@@ -1,14 +1,16 @@
 from typing import Annotated, Optional
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends
 from fastapi.responses import RedirectResponse, JSONResponse
 
 
-from backend.src.app.dependencies import (
-    get_auth_service,
-    get_google_auth_service,
+from backend.src.app.dependencies import get_auth_service, get_google_auth_service
+from backend.src.app.access_verification import (
+    only_for_admins,
+    only_for_guests,
+    only_for_users,
     get_access_token_for_request_user,
-    get_request_user_id,
 )
+
 from backend.src.app.schemas import UserLoginSchema, UserLoginFormSchema
 from backend.src.app.services import AuthService
 from backend.src.app.services.google_auth import GoogleAuthService
@@ -20,17 +22,18 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 async def login(
     user: UserLoginFormSchema,
     service: Annotated[AuthService, Depends(get_auth_service)],
+    _=Depends(only_for_guests),
 ) -> Optional[UserLoginSchema]:
     """Авторизация c login и password."""
     return await service.login(username=user.username, password=user.password)
 
 
-@router.get("/check")
-async def check_auth(user: str = Depends(get_request_user_id)):
-    if user:
-        return True
-
-    return False
+# @router.get("/check")
+# async def check_auth(user: str = Depends(get_request_user_id)):
+#     if user:
+#         return True
+#
+#     return False
 
 
 @router.post("/logout", response_class=JSONResponse)
@@ -50,15 +53,16 @@ async def revoke(
 )
 async def login_google(
     service: Annotated[GoogleAuthService, Depends(get_google_auth_service)],
+    _=Depends(only_for_guests),
 ):
     redirect_url = await service.get_google_redirect_url()
-    print(redirect_url)
     return RedirectResponse(redirect_url)
 
 
-@router.get("/google")
+@router.post("/google")
 async def auth_google(
     service: Annotated[GoogleAuthService, Depends(get_google_auth_service)],
     code: str,
+    _=Depends(only_for_guests),
 ):
     return await service.auth_google(code=code)

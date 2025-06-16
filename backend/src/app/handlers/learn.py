@@ -8,7 +8,7 @@ from sqlalchemy.exc import (
 
 from backend.src.app.schemas import UserWordSchema, CreateUserWordSchema, WordSchema
 from backend.src.app.services import learn as crud
-from backend.src.app.dependencies import get_request_user_id
+from backend.src.app.access_verification import only_for_users
 from backend.src.app.database import db_helper
 
 router = APIRouter(prefix="/learn", tags=["Learn Words"])
@@ -19,7 +19,7 @@ router = APIRouter(prefix="/learn", tags=["Learn Words"])
     response_model=list[WordSchema],
 )
 async def get_user_words(
-    user_id: int = Depends(get_request_user_id),
+    user_id: int = Depends(only_for_users),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     """Получает новые слова для изучения."""
@@ -43,7 +43,7 @@ async def get_user_words(
 )
 async def add_user_words(
     new_words: list[CreateUserWordSchema],
-    user_id: int = Depends(get_request_user_id),
+    user_id: int = Depends(only_for_users),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     """Создает прогресс по новым словам."""

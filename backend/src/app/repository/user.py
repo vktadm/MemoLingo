@@ -18,10 +18,10 @@ class UsersRepository:
     @handle_db_errors
     async def get_users(self) -> List[User]:
         """Получает всех существующих пользователей."""
-        print(self.session)
         stmt = select(User).order_by(User.id)
         result: Result = await self.session.execute(stmt)
         words = result.scalars().all()
+
         return list(words)
 
     @handle_db_errors
@@ -39,6 +39,7 @@ class UsersRepository:
     ) -> Optional[User]:
         """Получает User по username."""
         stmt = select(User).where(User.username == username)
+
         return await self.session.scalar(stmt)
 
     @handle_db_errors
@@ -48,6 +49,7 @@ class UsersRepository:
     ) -> Optional[User]:
         """Получает User по email."""
         stmt = select(User).where(User.email == email)
+
         return await self.session.scalar(stmt)
 
     @handle_db_errors
@@ -65,6 +67,7 @@ class UsersRepository:
         )
         self.session.add(user)
         await self.session.commit()
+
         return user
 
     @handle_db_errors
@@ -72,20 +75,19 @@ class UsersRepository:
         self,
         username: str,
         google_access_token: str,
-        name: Optional[str] = None,
         email: Optional[str] = None,
-        is_active: bool = True,
+        is_active: bool = False,
     ) -> User:
         """Создает User с google_access_token."""
         user = User(
             username=username,
             google_access_token=google_access_token,
-            name=name,
             email=email,
             is_active=is_active,
         )
         self.session.add(user)
         await self.session.commit()
+
         return user
 
     @handle_db_errors
