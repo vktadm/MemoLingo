@@ -9,8 +9,14 @@ export default function Logout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    logout();
-    navigate("/login", { replace: true });
+    async function loadData() {
+      const response = await logout();
+      if (!response.success) {
+        alert(response.message);
+      }
+      navigate("/login", { replace: true });
+    }
+    loadData();
   }, [navigate]);
 
   return (

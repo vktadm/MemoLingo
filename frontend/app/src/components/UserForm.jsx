@@ -7,11 +7,11 @@ import { useAuth } from "../hooks/AuthContext";
 import { CommonButtonFactory } from "./buttons/CommonButtons";
 import { IconButtonFactory } from "./buttons/IconButtons";
 
-function UserForm({ route, method }) {
+function UserForm({ method }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const { login, isLoading } = useAuth();
+  const { login, register, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const isLogin = method === "login";
@@ -24,16 +24,28 @@ function UserForm({ route, method }) {
       : { username, password, email };
 
     if (isLogin) {
-      const user = await login(credentials);
-      if (user) {
-        navigate(user.role === "admin" ? "/ui" : "/profile", { replace: true });
+      const response = await login(credentials);
+      if (response.success) {
+        navigate(response.data.role === "admin" ? "/ui" : "/profile", {
+          replace: true,
+        });
+      } else {
+        alert(response.message);
       }
     } else {
-      alert("Register");
+      const response = await register(credentials);
+      if (response.success) {
+        alert("Registration was successful.");
+        navigate("/login", {
+          replace: true,
+        });
+      } else {
+        alert(response.message);
+      }
     }
   };
-  const handleGoogleLogin = async (e) => {
-    e.preventDefault();
+  const handleGoogleLogin = async () => {
+    window.open("http://localhost:8000/api/v1/auth/login/google", "_blank");
   };
 
   return (
@@ -50,6 +62,18 @@ function UserForm({ route, method }) {
               disabled={isLoading}
             />
           </Form.Group>
+          {!isLogin && (
+            <Form.Group className="my-3" controlId="email">
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+                required
+              />
+            </Form.Group>
+          )}
           <Form.Group className="my-3" controlId="">
             <Form.Control
               type="password"

@@ -1,19 +1,25 @@
-import { createContext, useContext, useState } from "react";
-import { ACCESS_TOKEN, CURRENT_USER } from "../constants";
+import { createContext, useContext, useEffect, useState } from "react";
+import api from "../Api";
+import {
+  ACCESS_TOKEN,
+  CURRENT_USER,
+  LOGIN_ROUTE,
+  LOGOUT_ROUTE,
+  REGISTER_ROUTE,
+} from "../constants";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
-
   const [user, setUser] = useState(() => {
     const token = localStorage.getItem(ACCESS_TOKEN);
     const storedUser = localStorage.getItem(CURRENT_USER);
+
     return token && storedUser ? JSON.parse(storedUser) : null;
   });
 
   const isLogin = !!user && !!localStorage.getItem(ACCESS_TOKEN);
-
   const safeStoreUser = (userData) => {
     try {
       localStorage.setItem(
@@ -21,7 +27,7 @@ export function AuthProvider({ children }) {
         JSON.stringify({
           id: userData.id,
           username: userData.username,
-          role: userData.role,
+          role: userData.user_role,
         })
       );
     } catch (e) {
@@ -39,28 +45,54 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     setIsLoading(true);
     try {
-      // Здесь должен быть реальный вызов API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const mockUser = {
-        id: 1,
-        username: "Admin1",
-        role: "admin",
-        token: "mock-token",
-      };
-      setUser(mockUser);
-      localStorage.setItem(ACCESS_TOKEN, mockUser.token);
-      safeStoreUser(mockUser);
-      return mockUser;
+      const response = await api.post(LOGIN_ROUTE, credentials);
+      const user_data = response.data;
+
+      setUser(user_data);
+      localStorage.setItem(ACCESS_TOKEN, response.data.access_token);
+      safeStoreUser(user_data);
+
+      return response;
+    } catch (error) {
+      return error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem(ACCESS_TOKEN);
-    safeRemoveUser();
+  const logout = async () => {
+    try {
+      const response = await api.post(LOGOUT_ROUTE);
+      return response;
+    } catch (error) {
+      return error;
+    } finally {
+      setUser(null);
+      localStorage.removeItem(ACCESS_TOKEN);
+      safeRemoveUser();
+    }
   };
+
+  const register = async (credentials) => {
+    setIsLoading(true);
+    try {
+      const response = await api.post(REGISTER_ROUTE, credentials);
+      return response;
+    } catch (error) {
+      return error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    if (token && !user) {
+      // Можно добавить проверку токена через API
+      const storedUser = localStorage.getItem(CURRENT_USER);
+      if (storedUser) setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const value = {
     user,
@@ -68,6 +100,7 @@ export function AuthProvider({ children }) {
     isLogin,
     login,
     logout,
+    register,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

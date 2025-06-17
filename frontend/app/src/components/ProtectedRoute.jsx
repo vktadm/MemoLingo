@@ -14,3 +14,13 @@ export function ProtectedRoute({ children, adminOnly = false }) {
 
   return children;
 }
+
+export function ProtectedLoginRoute({ children }) {
+  const { isLogin } = useAuth();
+
+  if (isLogin) {
+    return <Navigate to="/profile" replace />;
+  }
+
+  return children;
+}

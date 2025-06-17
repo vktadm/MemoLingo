@@ -6,7 +6,10 @@ function Profile() {
   return (
     <Container>
       <h1>Profile</h1>
-      <div>{user.username}</div>
+      <div>
+        ID: {user.id}
+        <div>usernsme: {user.username}</div>
+      </div>
     </Container>
   );
 }

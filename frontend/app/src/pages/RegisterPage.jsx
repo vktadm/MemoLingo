@@ -4,7 +4,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { Logo } from "../components/Logo";
 import UserForm from "../components/UserForm";
 
-function Login() {
+function Register() {
   return (
     <Container fluid>
       <Row className="align-items-center justify-content-center">
@@ -12,10 +12,10 @@ function Login() {
           <div className="my-5">
             <Logo className="text-center" />
           </div>
-          <UserForm method="login" />
+          <UserForm method="register" />
         </Col>
       </Row>
     </Container>
   );
 }
-export default Login;
+export default Register;

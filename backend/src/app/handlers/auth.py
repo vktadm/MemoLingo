@@ -9,6 +9,7 @@ from backend.src.app.access_verification import (
     only_for_guests,
     only_for_users,
     get_access_token_for_request_user,
+    get_current_user,
 )
 
 from backend.src.app.schemas import UserLoginSchema, UserLoginFormSchema
@@ -26,14 +27,6 @@ async def login(
 ) -> Optional[UserLoginSchema]:
     """Авторизация c login и password."""
     return await service.login(username=user.username, password=user.password)
-
-
-# @router.get("/check")
-# async def check_auth(user: str = Depends(get_request_user_id)):
-#     if user:
-#         return True
-#
-#     return False
 
 
 @router.post("/logout", response_class=JSONResponse)

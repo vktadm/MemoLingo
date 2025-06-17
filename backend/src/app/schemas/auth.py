@@ -16,6 +16,7 @@ class GoogleUserDataSchema(BaseModel):
 
 
 class UserLoginSchema(BaseModel):
-    id: Optional[int] = None
-    access_token: str
+    id: Optional[int]
+    username: str = None
     user_role: str
+    access_token: str

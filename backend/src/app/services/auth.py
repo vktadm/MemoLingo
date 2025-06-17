@@ -68,7 +68,10 @@ class AuthService:
         await self._store_token(access_token)
 
         return UserLoginSchema(
-            access_token=access_token, id=user.id, user_role=user.user_role
+            access_token=access_token,
+            id=user.id,
+            user_role=user.user_role,
+            username=user.username,
         )
 
     async def _store_token(self, token: str) -> None:

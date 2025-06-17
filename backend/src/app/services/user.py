@@ -1,10 +1,6 @@
 from dataclasses import dataclass
 
-from backend.src.app.exceptions import (
-    NotFoundException,
-    UserAlreadyExistsException,
-    SMTPException,
-)
+from backend.src.app.exceptions import NotFoundException, UserAlreadyExistsException
 from backend.src.app.repository import UsersRepository
 from backend.src.app.schemas import UserSchema, UserCreateSchema
 from backend.src.app.services.crypto_manager import CryptoService

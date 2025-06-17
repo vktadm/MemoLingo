@@ -38,7 +38,6 @@ async def get_current_user(
 async def only_for_users(
     user: dict = Depends(get_current_user),
 ) -> Optional[dict]:
-    print(user.get("user_role"))
     if not user or user.get("user_role") == UserRole.ADMIN:
         raise UserForbiddenException()
 
@@ -55,6 +54,5 @@ async def only_for_guests(
 async def only_for_admins(
     user: dict = Depends(get_current_user),
 ):
-    print(user)
     if not user or user.get("user_role") != UserRole.ADMIN:
         raise UserForbiddenException()
