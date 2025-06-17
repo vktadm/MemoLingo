@@ -1,27 +1,16 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../Api";
-import { ACCESS_TOKEN } from "../constants";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/AuthContext";
 
-export function ProtectedRoute({ children }) {
-  const navigate = useNavigate();
+export function ProtectedRoute({ children, adminOnly = false }) {
+  const { user } = useAuth();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        await api.get("/auth/check");
-      } catch (error) {
-        localStorage.removeItem(ACCESS_TOKEN);
-        navigate("/login");
-      }
-    };
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-    if (!localStorage.getItem(ACCESS_TOKEN)) {
-      navigate("/login");
-    } else {
-      checkAuth();
-    }
-  }, [navigate]);
+  if (adminOnly && user.role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
 
-  return localStorage.getItem(ACCESS_TOKEN) ? children : null;
+  return children;
 }

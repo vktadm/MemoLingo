@@ -1,6 +1,6 @@
 import logoUrl from "./static/MemoLingo.svg?react";
 
-function Logo({ width = "100%", maxWidth = "150px", ...props }) {
+function LogoSVG({ width = "100%", maxWidth = "150px", ...props }) {
   return (
     <img
       src={logoUrl}
@@ -18,10 +18,10 @@ function Logo({ width = "100%", maxWidth = "150px", ...props }) {
   );
 }
 
-export function LogoCommon({ ...props }) {
+export function Logo({ ...props }) {
   return (
     <div style={{ textAlign: "center" }}>
-      <Logo {...props} />
+      <LogoSVG {...props} />
     </div>
   );
 }
