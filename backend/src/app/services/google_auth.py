@@ -23,7 +23,9 @@ class GoogleAuthService:
 
     async def get_google_redirect_url(self) -> str:
         """Получает URL для перенаправления на Google OAuth."""
-        return self.google_client.settings.get_url
+        url = self.google_client.settings.get_url
+        print(url)
+        return url
 
     async def _generate_auth_response(self, user: UserSchema) -> UserLoginSchema:
         """Генерирует ответ с токеном для аутентифицированного пользователя."""

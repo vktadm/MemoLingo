@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    container_name: postgres-memo-lingo
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  cache:
+    image: redis:latest
+    container_name: redis-memo-lingo
+    restart: always
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    container_name: backend-memo-lingo
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - cache
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-memo-lingo
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

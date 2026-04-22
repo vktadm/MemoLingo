@@ -1,7 +1,5 @@
 import pytest_asyncio
 import pytest
-
-import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 from backend.src.app.settings import settings as app_settings, Settings
